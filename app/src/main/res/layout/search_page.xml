@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/backdround_w_b">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/default_height"
+            android:paddingTop="@dimen/min_padding"
+            android:paddingBottom="@dimen/min_padding"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="@dimen/ic_back_arrow_size"
+                android:layout_height="@dimen/ic_back_arrow_size"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="@dimen/min_icon_size"
+                    android:layout_height="@dimen/min_icon_size"
+                    android:src="@drawable/ic_back_arrow_24"
+                    app:tint="@color/yp_color_text" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/default_padding"
+                tools:ignore="RtlSymmetry">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/search"
+                    android:textSize="@dimen/default_fontSize"
+                    android:textColor="@color/yp_color_text"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height52"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/min_padding"
+            android:paddingBottom="@dimen/min_padding"
+            android:paddingLeft="@dimen/default_padding"
+            android:paddingRight="@dimen/default_padding"
+
+            >
+
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_gray_rounded"
+
+                >
+
+
+                <ImageView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/search_icon"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/margin_12"
+                    app:tint="@color/input_text_color" />
+
+                <EditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="@dimen/zero"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/min_margin"
+                    android:layout_weight="1"
+                    android:hint="@string/search"
+                    android:maxLines="1"
+                    android:background="@null"
+                    android:inputType="text"
+                    android:textColor="@color/input_text_color"
+                    android:textColorHint="@color/input_text_color"
+                    android:padding="@dimen/zero"
+                    android:layout_gravity="center_vertical"/>
+
+                <ImageView
+                    android:id="@+id/clear_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/baseline_cancel_24"
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/min_margin"
+                    app:tint="@color/input_text_color"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_gray"/>
+
+
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
