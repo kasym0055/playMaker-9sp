@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="cardsTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/min_margin</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/default_fontSize</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+    <style name="MainButtonText">
+        <item name="android:textSize">@dimen/default_fontSize</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+    <style name="MainScreenButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/zero</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/bg_rounded</item>
+        <item name="android:padding">@dimen/default_padding</item>
+        <item name="android:textAppearance">@style/MainButtonText</item>
+        <item name="iconTint">@color/black</item>
+        <item name="iconPadding">@dimen/default_margin</item>
+        <item name="iconGravity">textStart</item>
+    </style>
+    <style name="settingsBtns">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/default_height</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">@dimen/default_padding</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="settingsBtnsTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+</resources>

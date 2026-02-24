@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_main">#1A1B22</color>
+    <color name="backdround_w_b">#1A1B22</color>
+    <color name="text_color">#FFFFFFFF</color>
+    <color name="yp_color_text" >#FFFFFF</color>
+    <color name="iconColor">#FFFFFF</color>
+    <color name="input_text_color">#1A1B22</color>
+</resources>
