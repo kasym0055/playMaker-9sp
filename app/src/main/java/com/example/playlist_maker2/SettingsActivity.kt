@@ -43,7 +43,7 @@ class SettingsActivity : AppCompatActivity() {
             val subject = getString(R.string.body_message)
             val shareIntent = Intent(Intent.ACTION_SENDTO)
             shareIntent.data = Uri.parse("mailto:")
-            shareIntent.putExtra(Intent.EXTRA_EMAIL,arrayOf("yourEmail@ya.ru"))
+            shareIntent.putExtra(Intent.EXTRA_EMAIL,arrayOf(getString(R.string.your_email)))
             shareIntent.putExtra(Intent.EXTRA_SUBJECT,subject)
             shareIntent.putExtra(Intent.EXTRA_TEXT,message)
             startActivity(shareIntent)

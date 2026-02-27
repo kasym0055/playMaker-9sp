@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         val mediaBtn =findViewById<MaterialButton>(R.id.media_btn)
         val settingBtn= findViewById<MaterialButton>(R.id.settings_btn)
 
-
         searchBtn.setOnClickListener  {
             val searchIntent= Intent(this, SearchActivity::class.java)
             startActivity(searchIntent)
@@ -40,9 +39,6 @@ class MainActivity : AppCompatActivity() {
             val settingsIntent= Intent(this, SettingsActivity::class.java)
             startActivity(settingsIntent)
         }
-
-
-
     }
 
 }

@@ -1,23 +1,21 @@
 package com.example.playlist_maker2
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.text.Editable
-import android.text.TextWatcher
+
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+
+import androidx.core.widget.addTextChangedListener
+import com.google.android.material.internal.ViewUtils.hideKeyboard
 
 class SearchActivity : AppCompatActivity() {
-    companion object {
-        const val keySearchText = "SEARCHTEXT"
-    }
+
     private var searchQuery = ""
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_page)
@@ -31,6 +29,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearText.setOnClickListener {
             editTextSearch.setText("")
+            hideKeyboard(editTextSearch)
         }
 
         val searchTextValue : String? = savedInstanceState?.getString(keySearchText)
@@ -38,34 +37,12 @@ class SearchActivity : AppCompatActivity() {
             editTextSearch.setText(searchTextValue)
         }
 
-        val textWatcherSearch= object : TextWatcher{
-            override fun afterTextChanged(s: Editable?) {
-
+        editTextSearch.addTextChangedListener(
+            onTextChanged ={text,_,_,_->
+                clearText.visibility = clearButtonVisibility(text)
+                searchQuery = text?.toString().orEmpty()
             }
-
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-
-            }
-
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                clearText.visibility = clearButtonVisibility(s)
-                searchQuery = s?.toString().orEmpty()
-
-            }
-
-        }
-
-        editTextSearch.addTextChangedListener(textWatcherSearch )
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -79,5 +56,8 @@ class SearchActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+    companion object {
+        const val keySearchText = "SEARCHTEXT"
     }
 }

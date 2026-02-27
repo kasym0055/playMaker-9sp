@@ -12,6 +12,7 @@
     <dimen name="default_icon_size">24sp</dimen>
     <dimen name="max_margin">24sp</dimen>
     <dimen name="ic_back_arrow_size">48dp</dimen>
+    <dimen name="padding36">36dp</dimen>
     <dimen name="height52">52dp</dimen>
     <dimen name="default_height">56dp</dimen>
 </resources>

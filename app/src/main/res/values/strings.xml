@@ -10,5 +10,6 @@
     <string name="share_message">курс по андроид разработке https://practicum.yandex.ru/android-developer/</string>
     <string name="head_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="body_message">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="your_email">yourEmail@ya.ru</string>
     <string name="practicum_offer_url">https://yandex.ru/legal/practicum_offer/ru/</string>
 </resources>
