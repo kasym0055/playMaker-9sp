@@ -74,7 +74,7 @@
                     android:src="@drawable/search_icon"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/margin_12"
-                    app:tint="@color/input_text_color" />
+                    app:tint="@color/input_hint_color" />
 
                 <EditText
                     android:id="@+id/etSearch"
@@ -85,7 +85,7 @@
                     android:background="@null"
                     android:inputType="text"
                     android:textColor="@color/input_text_color"
-                    android:textColorHint="@color/input_text_color"
+                    android:textColorHint="@color/input_hint_color"
                     android:paddingStart="@dimen/padding36"
                     android:paddingEnd="@dimen/padding36"
                     android:layout_gravity="center_vertical"/>
@@ -98,7 +98,7 @@
                     android:visibility="gone"
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="@dimen/margin_12"
-                    app:tint="@color/input_text_color"/>
+                    app:tint="@color/input_hint_color"/>
 
             </FrameLayout>
 
