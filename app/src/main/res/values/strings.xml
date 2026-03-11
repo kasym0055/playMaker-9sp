@@ -12,4 +12,5 @@
     <string name="body_message">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="your_email">yourEmail@ya.ru</string>
     <string name="practicum_offer_url">https://yandex.ru/legal/practicum_offer/ru/</string>
+    <string name="dot">\u00A0•\u00A0</string>
 </resources>
