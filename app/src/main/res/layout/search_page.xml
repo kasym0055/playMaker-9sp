@@ -19,9 +19,11 @@
             android:gravity="center_vertical">
 
             <LinearLayout
+                android:id="@+id/arr_back"
                 android:layout_width="@dimen/ic_back_arrow_size"
                 android:layout_height="@dimen/ic_back_arrow_size"
-                android:gravity="center">
+                android:gravity="center"
+                >
 
                 <ImageView
                     android:layout_width="@dimen/min_icon_size"
@@ -38,6 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/search"
+                    android:fontFamily="@font/ys_display_medium"
                     android:textSize="@dimen/default_fontSize"
                     android:textColor="@color/yp_color_text"/>
             </LinearLayout>
@@ -55,7 +58,7 @@
 
             >
 
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -75,30 +78,29 @@
 
                 <EditText
                     android:id="@+id/etSearch"
-                    android:layout_width="@dimen/zero"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/min_margin"
-                    android:layout_weight="1"
                     android:hint="@string/search"
                     android:maxLines="1"
                     android:background="@null"
                     android:inputType="text"
                     android:textColor="@color/input_text_color"
                     android:textColorHint="@color/input_text_color"
-                    android:padding="@dimen/zero"
+                    android:paddingStart="@dimen/padding36"
+                    android:paddingEnd="@dimen/padding36"
                     android:layout_gravity="center_vertical"/>
 
                 <ImageView
                     android:id="@+id/clear_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/baseline_cancel_24"
+                    android:src="@drawable/clear_text"
                     android:visibility="gone"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/min_margin"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="@dimen/margin_12"
                     app:tint="@color/input_text_color"/>
 
-            </LinearLayout>
+            </FrameLayout>
 
         </LinearLayout>
 
