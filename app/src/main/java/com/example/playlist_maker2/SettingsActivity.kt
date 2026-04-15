@@ -8,8 +8,10 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
@@ -21,11 +23,16 @@ class SettingsActivity : AppCompatActivity() {
         val shareApp = findViewById<LinearLayout>(R.id.share_app)
         val chatSupport = findViewById<LinearLayout>(R.id.chatSupport)
         val userAgreement = findViewById<LinearLayout>(R.id.userAgreement)
-
+        val switchDarkTheme = findViewById<SwitchMaterial>(R.id.switchDarkTheme)
+        
         arrBack.setOnClickListener {
             finish()
         }
-
+        
+        switchDarkTheme.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
+        
         shareApp.setOnClickListener {
             val message = getString(R.string.share_message)
 

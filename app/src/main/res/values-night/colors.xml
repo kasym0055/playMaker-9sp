@@ -10,4 +10,5 @@
     <color name="author_name_color_music">#FFFFFF</color>
     <color name="yp_button">#FFFFFF</color>
     <color name="button_text">#1A1B22</color>
+    <color name="error_text_color">#FFFFFF</color>
 </resources>

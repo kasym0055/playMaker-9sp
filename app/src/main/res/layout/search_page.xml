@@ -151,7 +151,6 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:paddingTop="100dp"
-
                 android:orientation="vertical"
                 android:visibility="visible">
                 <ImageView
@@ -159,20 +158,25 @@
                     android:layout_width="120dp"
                     android:layout_height="120dp"/>
                 <TextView
-
                     android:id="@+id/placeholderTextError"
                     android:gravity="center"
-                    style="@style/errorTextStyle"/>
+                    style="@style/errorTextStyle"
+                    android:layout_marginEnd="@dimen/max_margin"
+                    android:layout_marginStart="@dimen/max_margin"
+                    />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/refreshButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/black"
+                    android:backgroundTint="@color/error_text_color"
                     android:padding="11dp"
+                    android:fontFamily="@font/ys_display_medium"
+                    android:textSize="@dimen/button_text_size"
                     android:layout_marginTop="@dimen/max_margin"
                     app:cornerRadius="@dimen/radius_button"
                     android:text="@string/refresh"
                     android:textColor="@color/button_text"
+
                     android:visibility="gone"
                     android:textAllCaps="false"/>
             </LinearLayout>

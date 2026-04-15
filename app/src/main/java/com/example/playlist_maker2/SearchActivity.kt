@@ -87,6 +87,7 @@ class SearchActivity : AppCompatActivity() {
         clearText.setOnClickListener {
             editTextSearch.setText("")
             hideKeyboard(editTextSearch)
+            container.visibility =View.GONE
             trackList.clear()
             trackAdapter.notifyDataSetChanged()
         }
