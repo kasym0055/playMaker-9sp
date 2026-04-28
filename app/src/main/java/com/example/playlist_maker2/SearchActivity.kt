@@ -1,9 +1,9 @@
 package com.example.playlist_maker2
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -13,15 +13,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.Placeholder
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.internal.ViewUtils.hideKeyboard
 import retrofit2.Response
 import retrofit2.Call
@@ -29,7 +27,12 @@ import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+const val LAST_TRACKS = "last_tracks"
+const val EDIT_TEXT_KEY = "key_for_edit_text"
+private lateinit var sharedPrefs: SharedPreferences;
+private lateinit var history: SearchHistory
 class SearchActivity : AppCompatActivity() {
+
 
     private var searchQuery = ""
     private val trackList= ArrayList<Track>()
@@ -39,20 +42,25 @@ class SearchActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val trackService = retrofit.create(ItunesAPI::class.java)
-    var trackAdapter = TrackAdapter(trackList)
+    lateinit var trackAdapter: TrackAdapter
+    lateinit var historyTrackAdapter: TrackAdapter
     lateinit var placeholder: TextView
     lateinit var recycleView: RecyclerView
+    lateinit var recycleViewHistory: RecyclerView
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderText: TextView
     private lateinit var refreshButton: Button
     private lateinit var container: LinearLayout
     private lateinit var editTextSearch: EditText
-
+    private lateinit var historyContainer: LinearLayout
+    private lateinit var clearHistoryButton: MaterialButton
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_page)
 
+        sharedPrefs = getSharedPreferences(LAST_TRACKS,MODE_PRIVATE)
+        history = SearchHistory(sharedPrefs)
 
         val root = findViewById<View>(R.id.main)
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
@@ -64,17 +72,37 @@ class SearchActivity : AppCompatActivity() {
         editTextSearch = findViewById<EditText>(R.id.etSearch)
         val clearText = findViewById<ImageView>(R.id.clear_text)
         recycleView = findViewById<RecyclerView>(R.id.RecycleSearch)
+        recycleViewHistory = findViewById<RecyclerView>(R.id.historyRecycle)
         val searchButton = findViewById<ImageView>(R.id.search_button)
         placeholder = findViewById<TextView>(R.id.placeholderText)
         placeholderImage = findViewById<ImageView>(R.id.placeholderImage)
         placeholderText = findViewById<TextView>(R.id.placeholderTextError)
         refreshButton = findViewById<Button>(R.id.refreshButton)
         container = findViewById<LinearLayout>(R.id.placeholderMessageError)
+        historyContainer = findViewById<LinearLayout>(R.id.historyContainer)
+        clearHistoryButton = findViewById<MaterialButton>(R.id.clearHistoryButton)
+
+        val historyArray= history.read() ?: emptyArray()
+        val historyTracks = ArrayList<Track>()
+        historyTracks.addAll(historyArray)
+        historyTrackAdapter = TrackAdapter(historyTracks,{})
+        recycleViewHistory.layoutManager = LinearLayoutManager(this)
 
         Log.d("TEST", trackList.size.toString())
         recycleView.layoutManager = LinearLayoutManager(this)
-        trackAdapter = TrackAdapter(trackList)
+        trackAdapter = TrackAdapter(trackList,
+            clickListener = {track->
+                history.addTrack(track)
+                val updatedHistory = history.read()
+                historyTracks.clear()
+                historyTracks.addAll(updatedHistory ?: emptyArray())
+                historyTrackAdapter.notifyDataSetChanged()
+            })
         recycleView.adapter = trackAdapter
+        recycleViewHistory.adapter = historyTrackAdapter
+        trackAdapter.notifyDataSetChanged()
+
+
 
         arrBack.setOnClickListener {
             finish()
@@ -92,6 +120,11 @@ class SearchActivity : AppCompatActivity() {
             trackAdapter.notifyDataSetChanged()
         }
 
+        clearHistoryButton.setOnClickListener {
+            history.clear()
+        historyTrackAdapter.notifyDataSetChanged()
+        historyContainer.visibility=View.GONE
+        }
 
         val searchTextValue : String? = savedInstanceState?.getString(keySearchText)
         if (searchTextValue!=null){
@@ -106,10 +139,23 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
+        editTextSearch.setOnFocusChangeListener{view, hasFocus->
+            if (historyTracks.isEmpty()){
+                historyContainer.visibility = View.GONE
+            }else {
+                historyContainer.visibility =
+                    if (hasFocus && editTextSearch.text.isEmpty()) View.VISIBLE else View.GONE
+            }
+        }
+
+
+
         editTextSearch.addTextChangedListener(
             onTextChanged ={text,_,_,_->
                 clearText.visibility = clearButtonVisibility(text)
                 searchQuery = text?.toString().orEmpty()
+                historyContainer.visibility = if (editTextSearch.hasFocus() && text?.isEmpty() == true) View.VISIBLE else View.GONE
+
             }
         )
 
@@ -138,8 +184,6 @@ class SearchActivity : AppCompatActivity() {
                         call: Call<TrackResponse>,
                         response: Response<TrackResponse>
                     ) {
-
-                        Log.d("NETWORK_CHECK", "Status: ${response.code()} | Body: ${response.body()?.results?.size} items")
                         if (response.code() == 200) {
 
                             trackList.clear()
@@ -147,10 +191,7 @@ class SearchActivity : AppCompatActivity() {
                             if (response.body()?.results?.isNotEmpty() == true) {
                                 trackList.addAll(response.body()?.results!!)
                                 val results = response.body()?.results
-                                Log.d("ITUNES_CHECK", "Items found: ${results?.size}")
                                 trackAdapter.notifyDataSetChanged()
-
-
                             }
                             if (trackList.isEmpty()) {
                                 showMessage(getString(R.string.nothing_found), "")
