@@ -13,4 +13,7 @@
     <string name="your_email">yourEmail@ya.ru</string>
     <string name="practicum_offer_url">https://yandex.ru/legal/practicum_offer/ru/</string>
     <string name="dot">\u00A0•\u00A0</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="something_went_wrong">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="refresh">Обновить</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.example.playlist_maker2
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 
 class TrackAdapter(private val track: ArrayList<Track>): RecyclerView.Adapter<SearchViewHolder>() {
@@ -13,6 +15,7 @@ class TrackAdapter(private val track: ArrayList<Track>): RecyclerView.Adapter<Se
         return SearchViewHolder(view)
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onBindViewHolder(
         holder: SearchViewHolder,
         position: Int
