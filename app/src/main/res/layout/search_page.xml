@@ -132,6 +132,44 @@
                 android:textColor="@color/yp_color_text"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/historyContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/you_search"
+                android:gravity="center"
+                android:paddingTop="@dimen/padding_18"
+                android:paddingBottom="@dimen/padding_12"
+                android:fontFamily="@font/ys_display_medium"
+                android:textSize="@dimen/error_text_size"
+                android:textColor="@color/yp_color_text"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/historyRecycle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+
+                />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearHistoryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/yp_button"
+                app:cornerRadius="@dimen/radius_button"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/max_margin"
+                android:layout_marginBottom="@dimen/max_margin"
+                android:text="@string/clean_history"
+                android:fontFamily="@font/ys_display_medium"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -181,9 +219,7 @@
                     android:textAllCaps="false"/>
             </LinearLayout>
         </LinearLayout>
-
-
-
+        
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

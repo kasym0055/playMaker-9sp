@@ -6,7 +6,10 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 
-class TrackAdapter(private val track: ArrayList<Track>): RecyclerView.Adapter<SearchViewHolder>() {
+class TrackAdapter(
+    private val track: ArrayList<Track>,
+    private val clickListener:(Track) -> Unit
+): RecyclerView.Adapter<SearchViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -21,6 +24,7 @@ class TrackAdapter(private val track: ArrayList<Track>): RecyclerView.Adapter<Se
         position: Int
     ) {
         holder.bind(track[position])
+        holder.itemView.setOnClickListener { clickListener(track[position]) }
     }
 
     override fun getItemCount(): Int {
