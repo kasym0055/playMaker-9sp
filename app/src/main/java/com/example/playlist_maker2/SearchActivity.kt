@@ -1,6 +1,7 @@
 package com.example.playlist_maker2
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -29,10 +30,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val LAST_TRACKS = "last_tracks"
 const val EDIT_TEXT_KEY = "key_for_edit_text"
+const val KEY_TRACK = "key_track"
 private lateinit var sharedPrefs: SharedPreferences;
 private lateinit var history: SearchHistory
 class SearchActivity : AppCompatActivity() {
-
 
     private var searchQuery = ""
     private val trackList= ArrayList<Track>()
@@ -97,13 +98,15 @@ class SearchActivity : AppCompatActivity() {
                 historyTracks.clear()
                 historyTracks.addAll(updatedHistory ?: emptyArray())
                 historyTrackAdapter.notifyDataSetChanged()
+                val intent = Intent(this, AudioPlayerActivity::class.java).apply {
+                    putExtra(KEY_TRACK,track)
+                }
+                startActivity(intent)
             })
         recycleView.adapter = trackAdapter
         recycleViewHistory.adapter = historyTrackAdapter
         trackAdapter.notifyDataSetChanged()
-
-
-
+        
         arrBack.setOnClickListener {
             finish()
         }
@@ -148,8 +151,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-
-
         editTextSearch.addTextChangedListener(
             onTextChanged ={text,_,_,_->
                 clearText.visibility = clearButtonVisibility(text)
@@ -158,7 +159,6 @@ class SearchActivity : AppCompatActivity() {
 
             }
         )
-
 
     }
 

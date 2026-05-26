@@ -10,20 +10,27 @@
     <dimen name="margin_12">12dp</dimen>
     <dimen name="padding_12">12dp</dimen>
     <dimen name="padding_10">10dp</dimen>
+    <dimen name="text13">13sp</dimen>
     <dimen name="button_text_size">14sp</dimen>
+    <dimen name="author_text_size">14sp</dimen>
     <dimen name="default_padding">16dp</dimen>
+    <dimen name="guide_height16">16dp</dimen>
     <dimen name="default_margin">16dp</dimen>
     <dimen name="name_music">16dp</dimen>
     <dimen name="padding_18">18dp</dimen>
     <dimen name="radius_button">22dp</dimen>
     <dimen name="default_fontSize">22sp</dimen>
     <dimen name="error_text_size">19sp</dimen>
+    <dimen name="margin17">17dp</dimen>
     <dimen name="min_icon_size">16dp</dimen>
     <dimen name="default_icon_size">24sp</dimen>
     <dimen name="max_margin">24dp</dimen>
     <dimen name="ic_back_arrow_size">48dp</dimen>
     <dimen name="padding36">36dp</dimen>
+    <dimen name="margin38">38dp</dimen>
+    <dimen name="margin54">54dp</dimen>
     <dimen name="picture_size_music">45dp</dimen>
     <dimen name="height52">52dp</dimen>
     <dimen name="default_height">56dp</dimen>
+    <dimen name="guide_height56">56dp</dimen>
 </resources>
