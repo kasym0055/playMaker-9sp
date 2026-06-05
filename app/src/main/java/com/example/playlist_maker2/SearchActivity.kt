@@ -86,7 +86,12 @@ class SearchActivity : AppCompatActivity() {
         val historyArray= history.read() ?: emptyArray()
         val historyTracks = ArrayList<Track>()
         historyTracks.addAll(historyArray)
-        historyTrackAdapter = TrackAdapter(historyTracks,{})
+        historyTrackAdapter = TrackAdapter(historyTracks,{
+            val intent = Intent(this, AudioPlayerActivity::class.java).apply {
+                putExtra(KEY_TRACK,it)
+            }
+            startActivity(intent)
+        })
         recycleViewHistory.layoutManager = LinearLayoutManager(this)
 
         Log.d("TEST", trackList.size.toString())

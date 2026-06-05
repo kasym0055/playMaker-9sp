@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 
@@ -35,9 +36,16 @@ class AudioPlayerActivity : AppCompatActivity(){
             trackDuration.text = String.format("%d:%02d", minutes, seconds)
             trackAlbome.text = track.collectionName ?: ""
             val date = track.releaseDate ?: ""
-            trackRelease.text = date.substring(0,4)
+            if (!date.isNullOrEmpty() && date.length>=4){
+                trackRelease.text = date.substring(0,4)
+            }
+            else{
+                trackRelease.text=""
+            }
             trackGenre.text = track.primaryGenreName
             trackCountry.text = track.country
+        }else{
+            Toast.makeText(this,"No data", Toast.LENGTH_SHORT).show()
         }
 
         arrowBack.setOnClickListener {
