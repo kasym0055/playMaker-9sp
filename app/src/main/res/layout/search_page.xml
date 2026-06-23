@@ -114,6 +114,7 @@
         </LinearLayout>
 
 
+
         <LinearLayout
             android:id="@+id/placeholderMessage"
             android:layout_width="match_parent"
@@ -131,6 +132,16 @@
                 android:textSize="16sp"
                 android:textColor="@color/yp_color_text"/>
         </LinearLayout>
+
+
+            <ProgressBar android:id="@+id/progressBar"
+                android:layout_width="@dimen/progress_bar_size"
+                android:layout_height="@dimen/progress_bar_size"
+                android:layout_gravity="center_horizontal"
+                android:indeterminateTint="#3772E7"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/margin140"
+                />
         <LinearLayout
             android:id="@+id/historyContainer"
             android:layout_width="match_parent"
@@ -138,6 +149,7 @@
             android:orientation="vertical"
             android:visibility="gone"
             >
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
