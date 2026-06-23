@@ -29,7 +29,5 @@ class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .centerCrop()
             .transform(RoundedCorners(10))
             .into(pictureMusic)
-
-
     }
 }

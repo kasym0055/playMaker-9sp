@@ -26,7 +26,7 @@ class SettingsActivity : AppCompatActivity() {
         
         switchDarkTheme.setOnCheckedChangeListener { switcher, checked  ->
             (applicationContext as App).switchTheme(checked )
-         }
+        }
         
         shareApp.setOnClickListener {
             val message = getString(R.string.share_message)
