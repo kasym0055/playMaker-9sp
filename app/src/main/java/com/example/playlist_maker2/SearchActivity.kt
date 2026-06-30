@@ -215,6 +215,9 @@ class SearchActivity : AppCompatActivity() {
     private fun performSearch(){
         if (editTextSearch.text.isNotEmpty()) {
             progressBar.visibility = View.VISIBLE
+            historyContainer.visibility = View.GONE
+            trackList.clear()
+            trackAdapter.notifyDataSetChanged()
             trackService.findTrack(editTextSearch.text.toString())
                 .enqueue(object : Callback<TrackResponse> {
                     override fun onResponse(
@@ -223,6 +226,7 @@ class SearchActivity : AppCompatActivity() {
                     ) {
                         if (response.code() == 200) {
                             progressBar.visibility = View.GONE
+                            historyContainer.visibility = View.GONE
                             trackList.clear()
 
                             if (response.body()?.results?.isNotEmpty() == true) {
