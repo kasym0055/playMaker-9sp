@@ -19,6 +19,7 @@
     <string name="clean_history">Очистить историю</string>
     <string name="you_search">Вы искали</string>
     <string name="track_duration30">0:30</string>
+    <string name="track_duration00">0:00</string>
     <string name="duration">Длительность</string>
     <string name="albome">Альбом</string>
     <string name="year">Год</string>

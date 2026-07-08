@@ -25,6 +25,7 @@
     <dimen name="min_icon_size">16dp</dimen>
     <dimen name="default_icon_size">24sp</dimen>
     <dimen name="max_margin">24dp</dimen>
+    <dimen name="progress_bar_size">44dp</dimen>
     <dimen name="ic_back_arrow_size">48dp</dimen>
     <dimen name="padding36">36dp</dimen>
     <dimen name="margin38">38dp</dimen>
@@ -33,4 +34,5 @@
     <dimen name="height52">52dp</dimen>
     <dimen name="default_height">56dp</dimen>
     <dimen name="guide_height56">56dp</dimen>
+    <dimen name="margin140">140dp</dimen>
 </resources>

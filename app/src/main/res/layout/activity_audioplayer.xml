@@ -95,7 +95,8 @@
             app:layout_constraintStart_toStartOf="@id/leftBorder"
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
             app:layout_constraintTop_toBottomOf="@id/authorText"
-            android:layout_marginTop="@dimen/margin38"/>
+            android:layout_marginTop="@dimen/margin38"
+            />
 
         <ImageButton
             android:id="@+id/favouriteButton"
