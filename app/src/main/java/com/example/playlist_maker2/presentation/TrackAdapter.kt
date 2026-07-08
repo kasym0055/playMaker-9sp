@@ -1,10 +1,12 @@
-package com.example.playlist_maker2
+package com.example.playlist_maker2.presentation
 
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlist_maker2.R
+import com.example.playlist_maker2.domain.models.Track
 
 class TrackAdapter(
     private val track: ArrayList<Track>,

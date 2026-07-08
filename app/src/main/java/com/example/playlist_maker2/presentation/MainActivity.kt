@@ -1,8 +1,11 @@
-package com.example.playlist_maker2
+package com.example.playlist_maker2.presentation
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlist_maker2.presentation.MediaActivity
+import com.example.playlist_maker2.R
+import com.example.playlist_maker2.presentation.SettingsActivity
 import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {
