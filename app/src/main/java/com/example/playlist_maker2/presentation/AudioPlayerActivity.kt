@@ -108,11 +108,13 @@ class AudioPlayerActivity : AppCompatActivity(){
     // play music part
     override fun onPause() {
         super.onPause()
+        mainThreadHandler?.removeCallbacks(timerRunnable)
         audioPlayerInteractor.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        mainThreadHandler?.removeCallbacks(timerRunnable)
         audioPlayerInteractor.releasePlayer()
     }
     private fun playBackControl(){
