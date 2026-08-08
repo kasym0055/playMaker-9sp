@@ -1,20 +1,24 @@
-package com.example.playlist_maker2
+package com.example.playlist_maker2.ui
 
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.playlist_maker2.creator.Creator
+import com.example.playlist_maker2.R
+import com.example.playlist_maker2.domain.player.AudioPlayerInteractor
+import com.example.playlist_maker2.domain.models.Track
 
 class AudioPlayerActivity : AppCompatActivity(){
     private lateinit var playButton: ImageButton
+    private lateinit var audioPlayerInteractor: AudioPlayerInteractor
     private val mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private var url:String? =null
@@ -24,7 +28,7 @@ class AudioPlayerActivity : AppCompatActivity(){
     private val timerRunnable = object : Runnable{
         override fun run() {
             if (playerState == STATE_PLAYING){
-                val currentPositionInSeconds = mediaPlayer.currentPosition/TIME_DELAY
+                val currentPositionInSeconds = audioPlayerInteractor.getCurrentPosition()/TIME_DELAY
                 trackLength?.text = String.format("%d:%02d", currentPositionInSeconds/60, currentPositionInSeconds%60)
                 mainThreadHandler?.postDelayed(this,TIME_DELAY)
             }
@@ -41,6 +45,7 @@ class AudioPlayerActivity : AppCompatActivity(){
         playButton = findViewById(R.id.playButton)
         mainThreadHandler = Handler(Looper.getMainLooper())
 
+        audioPlayerInteractor = Creator.provideAudioPlayerInteractor()
 
 
         if(track != null){
@@ -103,12 +108,14 @@ class AudioPlayerActivity : AppCompatActivity(){
     // play music part
     override fun onPause() {
         super.onPause()
-        stopPlay()
+        mainThreadHandler?.removeCallbacks(timerRunnable)
+        audioPlayerInteractor.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        mainThreadHandler?.removeCallbacks(timerRunnable)
+        audioPlayerInteractor.releasePlayer()
     }
     private fun playBackControl(){
         when(playerState){
@@ -121,30 +128,29 @@ class AudioPlayerActivity : AppCompatActivity(){
         }
     }
     private fun prepareUrl(){
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-
-        mediaPlayer.setOnPreparedListener {
-            playButton.isEnabled =true
-            playerState = STATE_PREPARED
-        }
-
-        mediaPlayer.setOnCompletionListener {
-            playButton.setBackgroundResource(R.drawable.ic_pause)
-            playerState = STATE_PREPARED
-            mainThreadHandler?.removeCallbacks(timerRunnable)
-            trackLength?.text = getString(R.string.track_duration00)
-        }
+        audioPlayerInteractor.preparePlayer(
+            url=url!!,
+            onPrepared = {
+                playButton.isEnabled =true
+                playerState = STATE_PREPARED
+            },
+            onCompletion = {
+                playButton.setBackgroundResource(R.drawable.ic_pause)
+                playerState = STATE_PREPARED
+                mainThreadHandler?.removeCallbacks(timerRunnable)
+                trackLength?.text = getString(R.string.track_duration00)
+            }
+        )
     }
     private fun startPlay(){
-        mediaPlayer.start()
+        audioPlayerInteractor.startPlayer()
         playButton.setBackgroundResource(R.drawable.ic_play)
         playerState = STATE_PLAYING
         mainThreadHandler?.post(timerRunnable)
     }
 
     private fun stopPlay(){
-        mediaPlayer.pause()
+        audioPlayerInteractor.pausePlayer()
         playButton.setBackgroundResource(R.drawable.ic_pause)
         playerState = STATE_PAUSED
         mainThreadHandler?.removeCallbacks(timerRunnable)
@@ -154,7 +160,7 @@ class AudioPlayerActivity : AppCompatActivity(){
 
     companion object{
         private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
+        const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
         private const val TIME_DELAY = 1000L
