@@ -1,6 +1,6 @@
 package com.example.playlist_maker2.data.network
 
-import com.example.playlist_maker2.data.network.ItunesAPI
+import com.example.playlist_maker2.domain.api.ItunesAPI
 import com.example.playlist_maker2.domain.models.Track
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
