@@ -3,18 +3,21 @@ package com.example.playlist_maker2.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlist_maker2.creator.Creator
 import com.example.playlist_maker2.R
 import com.example.playlist_maker2.domain.settings.SettingsInteractor
 import com.example.playlist_maker2.domain.sharing.SharingInteractor
 import com.example.playlist_maker2.domain.settings.model.ThemeSettings
+import com.example.playlist_maker2.ui.search.view_model.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
-    @SuppressLint("MissingInflatedId")
-    private lateinit var settingsInteractor: SettingsInteractor
-    private lateinit var sharingInteractor: SharingInteractor
+    private val viewModel: SettingsViewModel by viewModels {
+        SettingsViewModel.getViewModelFactory(applicationContext)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -25,31 +28,29 @@ class SettingsActivity : AppCompatActivity() {
         val userAgreement = findViewById<LinearLayout>(R.id.userAgreement)
         val switchDarkTheme = findViewById<SwitchMaterial>(R.id.switchDarkTheme)
 
-        settingsInteractor = Creator.provideSettingsInteractor(this)
-        sharingInteractor = Creator.provideSharingInteractor(this)
-
-        val currentSettings = settingsInteractor.getThemeSettings()
-        switchDarkTheme.isChecked = currentSettings.isDarkMode
+        viewModel.observeThemeSettings().observe(this) { themeSettings ->
+            switchDarkTheme.isChecked = themeSettings.isDarkMode
+        }
 
         arrBack.setOnClickListener {
             finish()
         }
 
         switchDarkTheme.setOnCheckedChangeListener { switcher, checked  ->
-            settingsInteractor.updateThemeSettings(ThemeSettings(isDarkMode = checked))
+            viewModel.updateTheme(checked)
         }
 
         shareApp.setOnClickListener {
-            sharingInteractor.shareApp()
+            viewModel.shareApp()
 
         }
 
         chatSupport.setOnClickListener {
-            sharingInteractor.openSupport()
+            viewModel.openSupport()
         }
 
         userAgreement.setOnClickListener {
-            sharingInteractor.openTerms()
+            viewModel.openTerms()
         }
     }
 }

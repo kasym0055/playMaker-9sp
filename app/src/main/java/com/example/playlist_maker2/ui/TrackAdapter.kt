@@ -9,7 +9,7 @@ import com.example.playlist_maker2.R
 import com.example.playlist_maker2.domain.models.Track
 
 class TrackAdapter(
-    private val track: ArrayList<Track>,
+    private val track: MutableList<Track>,
     private val clickListener:(Track) -> Unit
 ): RecyclerView.Adapter<SearchViewHolder>() {
     override fun onCreateViewHolder(

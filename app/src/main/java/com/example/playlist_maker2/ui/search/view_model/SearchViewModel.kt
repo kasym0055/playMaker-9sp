@@ -66,7 +66,7 @@ class SearchViewModel(private val searchTracksInteractor: SearchTracksInteractor
 
     fun clearHistory(){
         searchHistoryInteractor.clearHistory()
-        stateLiveData.value = SearchState.History(emptyArray())
+        stateLiveData.value = SearchState.History(emptyList())
     }
 
     companion object{

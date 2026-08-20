@@ -36,13 +36,13 @@ const val KEY_TRACK = "key_track"
 class SearchActivity : AppCompatActivity() {
 
     private var searchQuery = ""
-    private val trackList= ArrayList<Track>()
+    private val trackList= mutableListOf<Track>()
     lateinit var trackAdapter: TrackAdapter
     lateinit var historyTrackAdapter: TrackAdapter
     lateinit var placeholder: TextView
     lateinit var recycleView: RecyclerView
     lateinit var recycleViewHistory: RecyclerView
-    private val historyTracks = ArrayList<Track>()
+    private val historyTracks = mutableListOf<Track>()
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderText: TextView
     private lateinit var refreshButton: Button
@@ -163,11 +163,8 @@ class SearchActivity : AppCompatActivity() {
         }
 
         editTextSearch.setOnFocusChangeListener{view, hasFocus->
-            if (historyTracks.isEmpty()){
-                historyContainer.visibility = View.GONE
-            }else {
-                historyContainer.visibility =
-                    if (hasFocus && editTextSearch.text.isEmpty()) View.VISIBLE else View.GONE
+            if (hasFocus && editTextSearch.text.isEmpty()){
+                viewModel.showHistory()
             }
         }
 
@@ -287,13 +284,17 @@ class SearchActivity : AppCompatActivity() {
         refreshButton.visibility = View.GONE
     }
 
-    private fun showHistory(historyTracks: Array<Track>) {
+    private fun showHistory(tracks: List<Track>) {
         progressBar.visibility = View.GONE
         container.visibility = View.GONE
         recycleView.visibility = View.GONE
 
-        if (historyTracks.isNotEmpty()) {
+        if (tracks.isNotEmpty()) {
             historyContainer.visibility = View.VISIBLE
+
+            historyTracks.clear()
+            historyTracks.addAll(tracks)
+            historyTrackAdapter.notifyDataSetChanged()
         } else {
             historyContainer.visibility = View.GONE
         }

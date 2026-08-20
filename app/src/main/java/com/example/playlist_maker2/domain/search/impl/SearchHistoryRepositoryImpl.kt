@@ -8,9 +8,11 @@ import com.example.playlist_maker2.ui.EDIT_TEXT_KEY
 import com.google.gson.Gson
 
 class SearchHistoryRepositoryImpl(val sharedPrefs: SharedPreferences): SearchHistoryRepository {
-    override fun read(): Array<Track>{
-        val json = sharedPrefs.getString(EDIT_TEXT_KEY,null) ?: return emptyArray()
-        return Gson().fromJson(json, Array<Track>::class.java)
+    override fun read(): List<Track>{
+        val json = sharedPrefs.getString(EDIT_TEXT_KEY,null) ?: return emptyList()
+        val tracksArray = Gson().fromJson(json, Array<Track>::class.java)
+        return tracksArray.toList()
+
     }
 
     fun write(trackList: MutableList<Track>?){
