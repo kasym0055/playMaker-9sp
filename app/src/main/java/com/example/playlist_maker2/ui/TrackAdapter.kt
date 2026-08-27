@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlist_maker2.R
 import com.example.playlist_maker2.domain.models.Track
+import com.example.playlist_maker2.ui.search.SearchViewHolder
 
 class TrackAdapter(
     private val track: MutableList<Track>,

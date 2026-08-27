@@ -1,4 +1,4 @@
-package com.example.playlist_maker2.ui
+package com.example.playlist_maker2.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlist_maker2.R
 import com.example.playlist_maker2.domain.models.Track
+import com.example.playlist_maker2.ui.player.AudioPlayerActivity
 import com.example.playlist_maker2.ui.search.models.SearchState
 import com.example.playlist_maker2.ui.search.view_model.SearchViewModel
 import com.google.android.material.button.MaterialButton
@@ -33,12 +34,12 @@ import com.google.android.material.internal.ViewUtils.hideKeyboard
 const val EDIT_TEXT_KEY = "key_for_edit_text"
 const val KEY_TRACK = "key_track"
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
 
     private var searchQuery = ""
     private val trackList= mutableListOf<Track>()
-    lateinit var trackAdapter: TrackAdapter
-    lateinit var historyTrackAdapter: TrackAdapter
+    lateinit var trackAdapter: com.example.playlist_maker2.ui.TrackAdapter
+    lateinit var historyTrackAdapter: com.example.playlist_maker2.ui.TrackAdapter
     lateinit var placeholder: TextView
     lateinit var recycleView: RecyclerView
     lateinit var recycleViewHistory: RecyclerView
@@ -86,7 +87,7 @@ class SearchActivity : AppCompatActivity() {
 
 
         historyTrackAdapter =
-            TrackAdapter(historyTracks, {
+            _root_ide_package_.com.example.playlist_maker2.ui.TrackAdapter(historyTracks, {
                 if (clickDebounce()) {
 
                     val intent = Intent(
@@ -102,7 +103,7 @@ class SearchActivity : AppCompatActivity() {
 
 
         recycleView.layoutManager = LinearLayoutManager(this)
-        trackAdapter = TrackAdapter(
+        trackAdapter = _root_ide_package_.com.example.playlist_maker2.ui.TrackAdapter(
             trackList,
             clickListener = { track ->
                 if (clickDebounce()) {

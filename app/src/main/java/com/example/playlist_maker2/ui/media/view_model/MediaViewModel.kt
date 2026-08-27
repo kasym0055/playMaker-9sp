@@ -1,9 +1,9 @@
-package com.example.playlist_maker2.ui.search.view_model
+package com.example.playlist_maker2.ui.media.view_model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlist_maker2.ui.search.models.MediaState
+import com.example.playlist_maker2.ui.media.models.MediaState
 
 class MediaViewModel: ViewModel() {
     private val mediaLiveData = MutableLiveData<MediaState>()

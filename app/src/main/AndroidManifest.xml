@@ -14,16 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlaylistMaker2">
         <activity
-            android:name=".ui.SearchActivity"
+            android:name=".ui.search.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.MediaActivity"
+            android:name=".ui.media.MediaActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.AudioPlayerActivity"
+            android:name=".ui.player.AudioPlayerActivity"
             android:exported="false" />
         <activity
             android:name=".ui.MainActivity"

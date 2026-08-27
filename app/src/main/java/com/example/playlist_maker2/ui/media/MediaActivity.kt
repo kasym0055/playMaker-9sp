@@ -1,14 +1,12 @@
-package com.example.playlist_maker2.ui
+package com.example.playlist_maker2.ui.media
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.playlist_maker2.R
-import com.example.playlist_maker2.ui.search.models.MediaState
-import com.example.playlist_maker2.ui.search.view_model.MediaViewModel
+import com.example.playlist_maker2.ui.media.models.MediaState
+import com.example.playlist_maker2.ui.media.view_model.MediaViewModel
 
 class MediaActivity : AppCompatActivity() {
     private val viewModel: MediaViewModel by viewModels()

@@ -1,21 +1,16 @@
-package com.example.playlist_maker2.ui
+package com.example.playlist_maker2.ui.settings
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlist_maker2.creator.Creator
 import com.example.playlist_maker2.R
-import com.example.playlist_maker2.domain.settings.SettingsInteractor
-import com.example.playlist_maker2.domain.sharing.SharingInteractor
-import com.example.playlist_maker2.domain.settings.model.ThemeSettings
-import com.example.playlist_maker2.ui.search.view_model.SettingsViewModel
+import com.example.playlist_maker2.ui.settings.view_model.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     private val viewModel: SettingsViewModel by viewModels {
-        SettingsViewModel.getViewModelFactory(applicationContext)
+        SettingsViewModel.Companion.getViewModelFactory(applicationContext)
     }
 
     override fun onCreate(savedInstanceState: Bundle?)  {
