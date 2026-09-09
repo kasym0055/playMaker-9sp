@@ -27,7 +27,7 @@ class AudioPlayerRepositoryImpl: AudioPlayerRepository {
     }
 
     override fun pausePlayer() {
-        mediaPlayer.stop()
+        mediaPlayer.pause()
     }
 
     override fun releasePlayer() {

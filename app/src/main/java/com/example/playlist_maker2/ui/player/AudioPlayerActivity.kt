@@ -57,10 +57,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         playButton.setOnClickListener { viewModel.playBackControl() }
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.pausePlayer()
-    }
+//    override fun onPause() {
+//        super.onPause()
+//        viewModel.pausePlayer()
+//    }
 
     private fun setupUi(track: Track) {
         val trackName = findViewById<TextView>(R.id.musicTitle)
@@ -89,21 +89,21 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun render(state: PlayerState) {
         when (state) {
             is PlayerState.Default -> {
-                playButton.isEnabled = false
+                playButton.isEnabled = true
             }
             is PlayerState.Prepared -> {
                 playButton.isEnabled = true
-                playButton.setBackgroundResource(R.drawable.ic_play)
+                playButton.setBackgroundResource(R.drawable.ic_pause)
                 trackLength.text = getString(R.string.track_duration00)
             }
             is PlayerState.Playing -> {
                 playButton.isEnabled = true
-                playButton.setBackgroundResource(R.drawable.ic_pause)
+                playButton.setBackgroundResource(R.drawable.ic_play)
                 trackLength.text = state.currentPosition
             }
             is PlayerState.Paused -> {
                 playButton.isEnabled = true
-                playButton.setBackgroundResource(R.drawable.ic_play)
+                playButton.setBackgroundResource(R.drawable.ic_pause)
                 trackLength.text = state.currentPosition
             }
         }
