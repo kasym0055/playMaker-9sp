@@ -1,9 +1,9 @@
 package com.example.playlist_maker2.data
 
 import com.example.playlist_maker2.data.dto.TrackResponse
-import com.example.playlist_maker2.domain.api.ItunesAPI
-import com.example.playlist_maker2.domain.api.SearchTracksInteractor
-import com.example.playlist_maker2.domain.api.TrackRepository
+import com.example.playlist_maker2.data.network.ItunesAPI
+import com.example.playlist_maker2.domain.search.SearchTracksInteractor
+import com.example.playlist_maker2.domain.search.TrackRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
