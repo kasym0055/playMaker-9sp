@@ -15,7 +15,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -30,6 +29,7 @@ import com.example.playlist_maker2.ui.search.models.SearchState
 import com.example.playlist_maker2.ui.search.view_model.SearchViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.internal.ViewUtils.hideKeyboard
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val EDIT_TEXT_KEY = "key_for_edit_text"
 const val KEY_TRACK = "key_track"
@@ -55,11 +55,7 @@ class SearchActivity : androidx.appcompat.app.AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var isClicked = true
 
-    private val viewModel: SearchViewModel by viewModels {
-        SearchViewModel.getViewModelFactory(
-            applicationContext
-        )
-    }
+    private val viewModel: SearchViewModel by viewModel()
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)

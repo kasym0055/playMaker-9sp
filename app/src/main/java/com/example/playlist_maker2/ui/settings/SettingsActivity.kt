@@ -2,16 +2,14 @@ package com.example.playlist_maker2.ui.settings
 
 import android.os.Bundle
 import android.widget.LinearLayout
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlist_maker2.R
 import com.example.playlist_maker2.ui.settings.view_model.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
-    private val viewModel: SettingsViewModel by viewModels {
-        SettingsViewModel.Companion.getViewModelFactory(applicationContext)
-    }
+    private val viewModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)

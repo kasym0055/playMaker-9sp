@@ -5,13 +5,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.playlist_maker2.R
 import com.example.playlist_maker2.domain.models.Track
 import com.example.playlist_maker2.ui.player.models.PlayerState
 import com.example.playlist_maker2.ui.player.view_model.PlayerViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -20,9 +20,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageButton
     private lateinit var trackLength: TextView
 
-    private val viewModel: PlayerViewModel by viewModels {
-        PlayerViewModel.Companion.getViewModelFactory()
-    }
+    private val viewModel: PlayerViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
