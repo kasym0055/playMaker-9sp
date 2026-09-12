@@ -1,12 +1,11 @@
 package com.example.playlist_maker2.ui
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlist_maker2.di.dataModule
 import com.example.playlist_maker2.di.interactorModule
 import com.example.playlist_maker2.di.repositoryModule
 import com.example.playlist_maker2.di.viewModelModule
-import com.example.playlist_maker2.domain.settings.SettingsInteractor
+import com.example.playlist_maker2.domain.settings.SettingsRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -23,18 +22,8 @@ class App : Application() {
             modules(dataModule, repositoryModule, interactorModule, viewModelModule)
         }
 
-        val settingsInteractor: SettingsInteractor = koinApplication.koin.get()
-        darkTheme = settingsInteractor.getThemeSettings().isDarkMode
-        switchTheme(darkTheme)
-    }
-    fun switchTheme(darkThemeEnabled: Boolean){
-        darkTheme=darkThemeEnabled
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkThemeEnabled){
-                AppCompatDelegate.MODE_NIGHT_YES
-            }else{
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
+        val settingsRepository: SettingsRepository = koinApplication.koin.get()
+        darkTheme = settingsRepository.getThemeSettings().isDarkMode
+        settingsRepository.switchTheme(darkTheme)
     }
 }

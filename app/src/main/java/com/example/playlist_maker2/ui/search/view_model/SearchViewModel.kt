@@ -22,23 +22,33 @@ class SearchViewModel(private val searchTracksInteractor: SearchTracksInteractor
     }
 
     fun searchDebounce(changedText: String){
-        if (latestSearchText == changedText) return
-        latestSearchText = changedText
+        val query = changedText.trim()
+        if (query.isEmpty()) {
+            latestSearchText = null
+            handler.removeCallbacks(searchRunnable)
+            return
+        }
+        if (latestSearchText == query) return
+        latestSearchText = query
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable,SEARCH_DEBOUNCE_DELAY)
     }
 
     fun observeData(): LiveData<SearchState> = stateLiveData
     fun search(query:String){
-        if(query.isEmpty()) return
+        val searchText = query.trim()
+        if(searchText.isEmpty()) return
+        latestSearchText = searchText
         stateLiveData.value = SearchState.Loading
 
-        searchTracksInteractor.search(query,
+        searchTracksInteractor.search(searchText,
             object : SearchTracksInteractor.TracksConsumer {
                 override fun consume(
                     foundTracks: List<Track>?,
                     errorMessage: String?
                 ) {
+                    if (latestSearchText != searchText) return
+
                     if (errorMessage != null) {
                         stateLiveData.postValue(SearchState.Error(errorMessage))
                     } else if (foundTracks.isNullOrEmpty()) {
@@ -55,6 +65,8 @@ class SearchViewModel(private val searchTracksInteractor: SearchTracksInteractor
     }
 
     fun showHistory(){
+        latestSearchText = null
+        handler.removeCallbacks(searchRunnable)
         val historyTracks = searchHistoryInteractor.getHistory()
         stateLiveData.value = SearchState.History(historyTracks)
     }

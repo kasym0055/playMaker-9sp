@@ -5,4 +5,5 @@ import com.example.playlist_maker2.domain.settings.model.ThemeSettings
 interface SettingsRepository {
    fun getThemeSettings(): ThemeSettings
    fun updateThemeSettings(settings: ThemeSettings)
+   fun switchTheme(darkThemeEnabled: Boolean)
 }

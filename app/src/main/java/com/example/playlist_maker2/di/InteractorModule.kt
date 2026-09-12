@@ -10,8 +10,7 @@ import com.example.playlist_maker2.domain.settings.SettingsInteractor
 import com.example.playlist_maker2.domain.settings.impl.SettingsInteractorImpl
 import com.example.playlist_maker2.domain.sharing.ExternalNavigator
 import com.example.playlist_maker2.domain.sharing.SharingInteractor
-import com.example.playlist_maker2.domain.sharing.impl.SharingInteractorImpl
-import com.example.playlist_maker2.ui.App
+import com.example.playlist_maker2.data.sharing.impl.SharingInteractorImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -29,7 +28,7 @@ val interactorModule = module {
     }
 
     single<SettingsInteractor> {
-        SettingsInteractorImpl(get(), androidContext() as App)
+        SettingsInteractorImpl(get())
     }
 
     single {

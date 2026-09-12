@@ -1,4 +1,4 @@
-package com.example.playlist_maker2.domain.search.impl
+package com.example.playlist_maker2.data.search.impl
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
