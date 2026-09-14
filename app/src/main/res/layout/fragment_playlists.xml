@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backdround_w_b"
+    tools:context=".ui.media.playlists.PlaylistsFragment">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/newPlaylistButton"
+        style="@style/MediaActionButton"
+        android:layout_marginTop="@dimen/max_margin"
+        android:text="@string/new_playlist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/playlistsPlaceholderImage"
+        android:layout_width="@dimen/media_placeholder_size"
+        android:layout_height="@dimen/media_placeholder_size"
+        android:layout_marginTop="@dimen/playlist_placeholder_image_margin"
+        android:contentDescription="@null"
+        android:src="@drawable/img_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/newPlaylistButton" />
+
+    <TextView
+        android:id="@+id/playlistsPlaceholderText"
+        style="@style/MediaPlaceholderText"
+        android:layout_marginTop="@dimen/default_margin"
+        android:text="@string/no_playlists"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/playlistsPlaceholderImage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

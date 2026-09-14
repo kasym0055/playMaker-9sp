@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backdround_w_b"
+    tools:context=".ui.media.favorite.FavoriteTracksFragment">
+
+    <ImageView
+        android:id="@+id/favoriteTracksPlaceholderImage"
+        android:layout_width="@dimen/media_placeholder_size"
+        android:layout_height="@dimen/media_placeholder_size"
+        android:layout_marginTop="@dimen/favorite_placeholder_top_margin"
+        android:contentDescription="@null"
+        android:src="@drawable/img_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/favoriteTracksPlaceholderText"
+        style="@style/MediaPlaceholderText"
+        android:layout_marginTop="@dimen/default_margin"
+        android:text="@string/media_library_empty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/favoriteTracksPlaceholderImage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

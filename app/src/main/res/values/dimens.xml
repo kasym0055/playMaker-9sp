@@ -35,4 +35,8 @@
     <dimen name="default_height">56dp</dimen>
     <dimen name="guide_height56">56dp</dimen>
     <dimen name="margin140">140dp</dimen>
+    <dimen name="media_tabs_height">48dp</dimen>
+    <dimen name="media_placeholder_size">120dp</dimen>
+    <dimen name="favorite_placeholder_top_margin">106dp</dimen>
+    <dimen name="playlist_placeholder_image_margin">46dp</dimen>
 </resources>
