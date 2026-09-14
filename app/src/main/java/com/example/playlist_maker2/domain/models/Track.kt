@@ -2,7 +2,7 @@ package com.example.playlist_maker2.domain.models
 
 import java.io.Serializable
 
-class Track(val trackId: Int,
+class Track(val trackId: Long,
             val trackName: String ,
             val collectionName: String?,
             val artistName: String ,

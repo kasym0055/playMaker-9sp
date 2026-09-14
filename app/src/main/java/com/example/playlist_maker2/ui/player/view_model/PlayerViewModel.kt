@@ -5,10 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlist_maker2.creator.Creator
 import com.example.playlist_maker2.domain.player.AudioPlayerInteractor
 import com.example.playlist_maker2.ui.player.models.PlayerState
 import java.util.Locale
@@ -78,12 +74,5 @@ class PlayerViewModel(
 
     companion object {
         private const val TIMER_UPDATE_DELAY = 300L
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val playerInteractor = Creator.provideAudioPlayerInteractor()
-                PlayerViewModel(playerInteractor)
-            }
-        }
     }
 }

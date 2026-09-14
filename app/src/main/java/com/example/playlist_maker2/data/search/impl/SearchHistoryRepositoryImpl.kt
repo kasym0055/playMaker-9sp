@@ -1,4 +1,4 @@
-package com.example.playlist_maker2.domain.search.impl
+package com.example.playlist_maker2.data.search.impl
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
@@ -7,16 +7,19 @@ import com.example.playlist_maker2.domain.search.SearchHistoryRepository
 import com.example.playlist_maker2.ui.search.EDIT_TEXT_KEY
 import com.google.gson.Gson
 
-class SearchHistoryRepositoryImpl(val sharedPrefs: SharedPreferences): SearchHistoryRepository {
+class SearchHistoryRepositoryImpl(
+    private val sharedPrefs: SharedPreferences,
+    private val gson: Gson
+) : SearchHistoryRepository {
     override fun read(): List<Track>{
         val json = sharedPrefs.getString(EDIT_TEXT_KEY,null) ?: return emptyList()
-        val tracksArray = Gson().fromJson(json, Array<Track>::class.java)
+        val tracksArray = gson.fromJson(json, Array<Track>::class.java)
         return tracksArray.toList()
 
     }
 
     fun write(trackList: MutableList<Track>?){
-        val json = Gson().toJson(trackList)
+        val json = gson.toJson(trackList)
         sharedPrefs.edit {
             putString(EDIT_TEXT_KEY, json)
         }
