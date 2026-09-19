@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.player.AudioPlayerActivity">
+    tools:context=".ui.player.AudioPlayerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -193,7 +193,7 @@
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
             app:layout_constraintBottom_toBottomOf="@id/genre"/>
         <TextView
-            android:id="@+id/Country"
+            android:id="@+id/country"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/country"
@@ -202,13 +202,13 @@
             app:layout_constraintStart_toStartOf="@id/leftBorder"
             app:layout_constraintTop_toBottomOf="@id/genre"/>
         <TextView
-            android:id="@+id/CountryRes"
+            android:id="@+id/countryRes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text13"
             android:textColor="@color/yp_color_text"
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
-            app:layout_constraintBottom_toBottomOf="@id/Country"/>
+            app:layout_constraintBottom_toBottomOf="@id/country"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

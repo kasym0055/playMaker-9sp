@@ -31,4 +31,6 @@
     <string name="new_playlist">Новый плейлист</string>
     <string name="media_library_empty">Ваша медиатека пуста</string>
     <string name="no_playlists">Вы не создали\nни одного плейлиста</string>
+    <string name="no_track_data">Нет данных о треке</string>
+    <string name="audio_unavailable">Аудио недоступно</string>
 </resources>
