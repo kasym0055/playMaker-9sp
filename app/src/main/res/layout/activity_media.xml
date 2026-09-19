@@ -5,6 +5,68 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backdround_w_b"
     tools:context=".ui.media.MediaActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout >
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mediaToolbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/default_height"
+        android:background="@color/backdround_w_b"
+        android:contentInsetStart="0dp"
+        android:contentInsetStartWithNavigation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.widget.ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="@dimen/ic_back_arrow_size"
+            android:layout_height="@dimen/ic_back_arrow_size"
+            android:layout_gravity="center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/back"
+            android:padding="@dimen/default_padding"
+            android:src="@drawable/ic_back_arrow_24"
+            android:tint="@color/iconColor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/margin_12"
+            android:fontFamily="@font/ys_display_medium"
+            android:gravity="center_vertical"
+            android:text="@string/media"
+            android:textColor="@color/yp_color_text"
+            android:textSize="@dimen/default_fontSize" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/mediaTabLayout"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/media_tabs_height"
+        android:background="@color/backdround_w_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mediaToolbar"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/yp_color_text"
+        app:tabIndicatorFullWidth="true"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="fixed"
+        app:tabRippleColor="@android:color/transparent"
+        app:tabSelectedTextColor="@color/yp_color_text"
+        app:tabTextAppearance="@style/MediaTabTextAppearance"
+        app:tabTextColor="@color/yp_color_text" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/mediaViewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mediaTabLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
