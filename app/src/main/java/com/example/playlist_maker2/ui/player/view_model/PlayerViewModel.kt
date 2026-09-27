@@ -1,12 +1,15 @@
 package com.example.playlist_maker2.ui.player.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlist_maker2.domain.player.AudioPlayerInteractor
 import com.example.playlist_maker2.ui.player.models.PlayerState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class PlayerViewModel(
@@ -14,17 +17,8 @@ class PlayerViewModel(
 ) : ViewModel() {
 
     private val playerDataLive = MutableLiveData<PlayerState>(PlayerState.Default)
-    private val mainThreadHandler = Handler(Looper.getMainLooper())
     private var isPreparationStarted = false
-
-    private val timerRunnable = object : Runnable {
-        override fun run() {
-            if (playerDataLive.value is PlayerState.Playing) {
-                playerDataLive.value = PlayerState.Playing(getCurrentFormattedTime())
-                mainThreadHandler.postDelayed(this, TIMER_UPDATE_DELAY)
-            }
-        }
-    }
+    private var progressJob: Job? = null
 
     fun observePlayer(): LiveData<PlayerState> = playerDataLive
 
@@ -36,11 +30,11 @@ class PlayerViewModel(
             audioPlayerInteractor.preparePlayer(
                 url = previewUrl,
                 onPrepared = {
-                    playerDataLive.value = PlayerState.Prepared
+                    playerDataLive.postValue(PlayerState.Prepared)
                 },
                 onCompletion = {
-                    mainThreadHandler.removeCallbacks(timerRunnable)
-                    playerDataLive.value = PlayerState.Prepared
+                    stopProgressUpdates()
+                    playerDataLive.postValue(PlayerState.Prepared)
                 }
             )
             true
@@ -59,30 +53,47 @@ class PlayerViewModel(
     }
 
     private fun startPlayer() {
-        mainThreadHandler.removeCallbacks(timerRunnable)
+        stopProgressUpdates()
         audioPlayerInteractor.startPlayer()
         playerDataLive.value = PlayerState.Playing(getCurrentFormattedTime())
-        mainThreadHandler.post(timerRunnable)
+        progressJob = viewModelScope.launch {
+            while (isActive && playerDataLive.value is PlayerState.Playing) {
+                delay(PROGRESS_UPDATE_DELAY)
+                if (playerDataLive.value is PlayerState.Playing) {
+                    playerDataLive.value = PlayerState.Playing(getCurrentFormattedTime())
+                }
+            }
+        }
     }
 
     fun pausePlayer() {
         audioPlayerInteractor.pausePlayer()
-        mainThreadHandler.removeCallbacks(timerRunnable)
+        stopProgressUpdates()
         playerDataLive.value = PlayerState.Paused(getCurrentFormattedTime())
     }
 
     private fun getCurrentFormattedTime(): String {
         val currentPositionInSeconds = audioPlayerInteractor.getCurrentPosition() / 1000L
-        return String.Companion.format(Locale.getDefault(), "%d:%02d", currentPositionInSeconds / 60, currentPositionInSeconds % 60)
+        return String.format(
+            Locale.getDefault(),
+            "%02d:%02d",
+            currentPositionInSeconds / 60,
+            currentPositionInSeconds % 60
+        )
+    }
+
+    private fun stopProgressUpdates() {
+        progressJob?.cancel()
+        progressJob = null
     }
 
     override fun onCleared() {
-        super.onCleared()
-        mainThreadHandler.removeCallbacks(timerRunnable)
+        stopProgressUpdates()
         audioPlayerInteractor.releasePlayer()
+        super.onCleared()
     }
 
     companion object {
-        private const val TIMER_UPDATE_DELAY = 300L
+        private const val PROGRESS_UPDATE_DELAY = 300L
     }
 }

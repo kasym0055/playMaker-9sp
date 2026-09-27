@@ -1,44 +1,28 @@
 package com.example.playlist_maker2.data
 
-import com.example.playlist_maker2.data.dto.TrackResponse
 import com.example.playlist_maker2.data.network.ItunesAPI
-import com.example.playlist_maker2.domain.search.SearchTracksInteractor
+import com.example.playlist_maker2.domain.models.Track
 import com.example.playlist_maker2.domain.search.TrackRepository
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import java.io.IOException
 
 class TrackRepositoryImpl(private val trackService: ItunesAPI) : TrackRepository {
-    private var currentSearchCall: Call<TrackResponse>? = null
-
-    override fun searchTracks(expression: String, consumer: SearchTracksInteractor.TracksConsumer) {
-        currentSearchCall?.cancel()
-        val searchCall = trackService.findTrack(expression)
-        currentSearchCall = searchCall
-        searchCall.enqueue(object : Callback<TrackResponse> {
-            override fun onResponse(
-                call: Call<TrackResponse>,
-                response: Response<TrackResponse>
-            ) {
-                if (call.isCanceled) return
-
-                if (response.code() == 200) {
-                    val tracksDtos = response.body()?.results ?: emptyList()
-                    val domainTracks = TrackMapper.mapList(tracksDtos)
-                    consumer.consume(domainTracks, null)
-                } else {
-                    consumer.consume(null, "Ошибка сервера: ${response.code()}")
-                }
+    override fun searchTracks(expression: String): Flow<Result<List<Track>>> = flow {
+        try {
+            val response = trackService.findTrack(expression)
+            if (response.isSuccessful) {
+                emit(Result.success(TrackMapper.mapList(response.body()?.results.orEmpty())))
+            } else {
+                emit(Result.failure(IOException("Ошибка сервера: ${response.code()}")))
             }
-
-            override fun onFailure(
-                call: Call<TrackResponse>,
-                t: Throwable
-            ) {
-                if (call.isCanceled) return
-
-                consumer.consume(null, t.message ?: "Нет интернета")
-            }
-        })
-    }
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
+            emit(Result.failure(exception))
+        }
+    }.flowOn(Dispatchers.IO)
 }

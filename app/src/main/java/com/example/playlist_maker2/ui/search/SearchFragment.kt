@@ -2,8 +2,6 @@ package com.example.playlist_maker2.ui.search
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlist_maker2.R
@@ -21,6 +20,9 @@ import com.example.playlist_maker2.ui.TrackAdapter
 import com.example.playlist_maker2.ui.search.models.SearchState
 import com.example.playlist_maker2.ui.search.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 const val TRACK_ARGUMENT_KEY = "track"
 const val EDIT_TEXT_KEY = "key_for_edit_text"
@@ -35,8 +37,7 @@ class SearchFragment : Fragment() {
     private val historyTracks = mutableListOf<Track>()
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historyTrackAdapter: TrackAdapter
-    private val handler = Handler(Looper.getMainLooper())
-    private val enableClicksRunnable = Runnable { isClickEnabled = true }
+    private var enableClicksJob: Job? = null
     private var isClickEnabled = true
 
     override fun onCreateView(
@@ -199,12 +200,17 @@ class SearchFragment : Fragment() {
     private fun clickDebounce(): Boolean {
         if (!isClickEnabled) return false
         isClickEnabled = false
-        handler.postDelayed(enableClicksRunnable, CLICK_DEBOUNCE_DELAY)
+        enableClicksJob?.cancel()
+        enableClicksJob = viewLifecycleOwner.lifecycleScope.launch {
+            delay(CLICK_DEBOUNCE_DELAY)
+            isClickEnabled = true
+        }
         return true
     }
 
     override fun onDestroyView() {
-        handler.removeCallbacks(enableClicksRunnable)
+        enableClicksJob?.cancel()
+        enableClicksJob = null
         isClickEnabled = true
         binding.recycleSearch.adapter = null
         binding.historyRecycle.adapter = null
