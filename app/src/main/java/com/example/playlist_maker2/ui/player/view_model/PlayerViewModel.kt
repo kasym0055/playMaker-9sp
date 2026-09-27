@@ -15,6 +15,7 @@ class PlayerViewModel(
 
     private val playerDataLive = MutableLiveData<PlayerState>(PlayerState.Default)
     private val mainThreadHandler = Handler(Looper.getMainLooper())
+    private var isPreparationStarted = false
 
     private val timerRunnable = object : Runnable {
         override fun run() {
@@ -27,17 +28,26 @@ class PlayerViewModel(
 
     fun observePlayer(): LiveData<PlayerState> = playerDataLive
 
-    fun prepareUrl(previewUrl: String) {
-        audioPlayerInteractor.preparePlayer(
-            url = previewUrl,
-            onPrepared = {
-                playerDataLive.value = PlayerState.Prepared
-            },
-            onCompletion = {
-                mainThreadHandler.removeCallbacks(timerRunnable)
-                playerDataLive.value = PlayerState.Prepared
-            }
-        )
+    fun prepareUrl(previewUrl: String): Boolean {
+        if (isPreparationStarted || playerDataLive.value !is PlayerState.Default) return true
+
+        isPreparationStarted = true
+        return try {
+            audioPlayerInteractor.preparePlayer(
+                url = previewUrl,
+                onPrepared = {
+                    playerDataLive.value = PlayerState.Prepared
+                },
+                onCompletion = {
+                    mainThreadHandler.removeCallbacks(timerRunnable)
+                    playerDataLive.value = PlayerState.Prepared
+                }
+            )
+            true
+        } catch (_: Exception) {
+            isPreparationStarted = false
+            false
+        }
     }
 
     fun playBackControl() {

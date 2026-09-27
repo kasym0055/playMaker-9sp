@@ -2,14 +2,13 @@ package com.example.playlist_maker2.ui.media
 
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.playlist_maker2.R
 import com.example.playlist_maker2.ui.media.favorite.FavoriteTracksFragment
 import com.example.playlist_maker2.ui.media.playlists.PlaylistsFragment
 
-class MediaPagerAdapter(fragmentActivity: FragmentActivity) :
-    FragmentStateAdapter(fragmentActivity) {
+class MediaPagerAdapter(parentFragment: Fragment) :
+    FragmentStateAdapter(parentFragment) {
 
     override fun getItemCount(): Int = PAGE_COUNT
 

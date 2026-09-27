@@ -1,6 +1,5 @@
 package com.example.playlist_maker2.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -8,42 +7,37 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.playlist_maker2.R
-import com.example.playlist_maker2.ui.media.MediaActivity
-import com.example.playlist_maker2.ui.search.SearchActivity
-import com.example.playlist_maker2.ui.settings.SettingsActivity
-import com.google.android.material.button.MaterialButton
+import com.example.playlist_maker2.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        val root = findViewById<View>(R.id.main)
-        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
-            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.updatePadding(top = statusBar.top)
+
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(top = systemBars.top, bottom = systemBars.bottom)
             insets
         }
-        val searchBtn = findViewById<MaterialButton>(R.id.search_btn)
-        val mediaBtn =findViewById<MaterialButton>(R.id.media_btn)
-        val settingBtn= findViewById<MaterialButton>(R.id.settings_btn)
 
-        searchBtn.setOnClickListener  {
-            val searchIntent= Intent(this, SearchActivity::class.java)
-            startActivity(searchIntent)
-        }
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
 
-        mediaBtn.setOnClickListener {
-            val mediaIntent= Intent(this, MediaActivity::class.java)
-            startActivity(mediaIntent)
-        }
-
-        settingBtn.setOnClickListener {
-            val settingsIntent= Intent(this, SettingsActivity::class.java)
-            startActivity(settingsIntent)
+        binding.bottomNavigation.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.bottomNavigation.visibility = if (destination.id == R.id.audioPlayerFragment) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
         }
     }
-
 }

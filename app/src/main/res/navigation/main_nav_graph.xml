@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/library_graph">
+
+    <navigation
+        android:id="@+id/library_graph"
+        app:startDestination="@id/mediaLibraryFragment">
+        <fragment
+            android:id="@+id/mediaLibraryFragment"
+            android:name="com.example.playlist_maker2.ui.media.MediaLibraryFragment"
+            android:label="@string/media" />
+    </navigation>
+
+    <navigation
+        android:id="@+id/search_graph"
+        app:startDestination="@id/searchFragment">
+        <fragment
+            android:id="@+id/searchFragment"
+            android:name="com.example.playlist_maker2.ui.search.SearchFragment"
+            android:label="@string/search" />
+    </navigation>
+
+    <navigation
+        android:id="@+id/settings_graph"
+        app:startDestination="@id/settingsFragment">
+        <fragment
+            android:id="@+id/settingsFragment"
+            android:name="com.example.playlist_maker2.ui.settings.SettingsFragment"
+            android:label="@string/settings" />
+    </navigation>
+
+    <fragment
+        android:id="@+id/audioPlayerFragment"
+        android:name="com.example.playlist_maker2.ui.player.AudioPlayerFragment"
+        android:label="@string/app_name">
+        <argument
+            android:name="track"
+            android:defaultValue="@null"
+            app:argType="com.example.playlist_maker2.domain.models.Track"
+            app:nullable="true" />
+    </fragment>
+
+</navigation>
