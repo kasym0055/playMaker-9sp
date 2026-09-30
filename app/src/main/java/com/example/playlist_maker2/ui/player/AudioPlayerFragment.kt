@@ -17,8 +17,7 @@ import com.example.playlist_maker2.ui.player.models.PlayerState
 import com.example.playlist_maker2.ui.player.view_model.PlayerViewModel
 import com.example.playlist_maker2.ui.search.TRACK_ARGUMENT_KEY
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.playlist_maker2.ui.formatTrackDuration
 
 class AudioPlayerFragment : Fragment() {
 
@@ -49,6 +48,19 @@ class AudioPlayerFragment : Fragment() {
         }
 
         setupUi(track)
+        viewModel.setTrack(track)
+        viewModel.observeFavorite().observe(viewLifecycleOwner) { state ->
+            binding.favouriteButton.isSelected = state.isFavorite
+            binding.favouriteButton.isEnabled = !state.isLoading
+            binding.favouriteButton.contentDescription = getString(
+                if (state.isFavorite) R.string.remove_from_favorites else R.string.add_to_favorites
+            )
+            if (state.hasError) {
+                Toast.makeText(requireContext(), R.string.favorites_error, Toast.LENGTH_SHORT).show()
+                viewModel.consumeFavoriteError()
+            }
+        }
+        binding.favouriteButton.setOnClickListener { viewModel.toggleFavorite() }
         viewModel.observePlayer().observe(viewLifecycleOwner, ::render)
 
         val previewUrl = track.previewUrl
@@ -60,8 +72,7 @@ class AudioPlayerFragment : Fragment() {
                 } == true
             }
         if (previewUrl == null || !viewModel.prepareUrl(previewUrl)) {
-            showUnavailableTrackAndGoBack()
-            return
+            showUnavailableTrack()
         }
 
         binding.arrowBackPlayer.setOnClickListener {
@@ -72,20 +83,18 @@ class AudioPlayerFragment : Fragment() {
         }
     }
 
-    private fun showUnavailableTrackAndGoBack() {
+    private fun showUnavailableTrack() {
         Toast.makeText(
             requireContext(),
             getString(R.string.audio_unavailable),
             Toast.LENGTH_SHORT
         ).show()
-        findNavController().popBackStack()
     }
 
     private fun setupUi(track: Track) = with(binding) {
         musicTitle.text = track.trackName
         authorText.text = track.artistName
-        durationRes.text = SimpleDateFormat("mm:ss", Locale.getDefault())
-            .format(track.trackTimeMillis)
+        durationRes.text = formatTrackDuration(track.trackTimeMillis)
         albomeRes.text = track.collectionName.orEmpty()
         yearRes.text = track.releaseDate
             ?.takeIf { it.length >= YEAR_LENGTH }
@@ -97,6 +106,7 @@ class AudioPlayerFragment : Fragment() {
         Glide.with(this@AudioPlayerFragment)
             .load(track.artworkUrl100.replace("100x100bb.jpg", "512x512bb.jpg"))
             .placeholder(R.drawable.audio_player_placeholder)
+            .error(R.drawable.audio_player_placeholder)
             .into(playerPicture)
     }
 

@@ -24,6 +24,7 @@ class SearchViewModel(
     private var searchDebounceJob: Job? = null
     private var searchRequestJob: Job? = null
     private var latestSearchText: String? = null
+    private var historyJob: Job? = null
 
     val searchQuery: String
         get() = savedStateHandle[SEARCH_QUERY_KEY] ?: ""
@@ -33,6 +34,7 @@ class SearchViewModel(
     }
 
     fun updateSearchQuery(query: String) {
+        historyJob?.cancel()
         savedStateHandle[SEARCH_QUERY_KEY] = query
     }
 
@@ -93,10 +95,14 @@ class SearchViewModel(
 
     fun showHistory() {
         cancelSearch()
-        stateLiveData.value = SearchState.History(searchHistoryInteractor.getHistory())
+        historyJob?.cancel()
+        historyJob = viewModelScope.launch {
+            stateLiveData.value = SearchState.History(searchHistoryInteractor.getHistory())
+        }
     }
 
     fun clearHistory() {
+        historyJob?.cancel()
         searchHistoryInteractor.clearHistory()
         stateLiveData.value = SearchState.History(emptyList())
     }

@@ -1,5 +1,7 @@
 package com.example.playlist_maker2.di
 
+import com.example.playlist_maker2.data.FavoriteTracksRepositoryImpl
+import com.example.playlist_maker2.domain.favorite.FavoriteTracksRepository
 import android.content.SharedPreferences
 import com.example.playlist_maker2.data.TrackRepositoryImpl
 import com.example.playlist_maker2.data.settings.impl.SettingsRepositoryImpl
@@ -13,14 +15,16 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val repositoryModule = module {
+    single<FavoriteTracksRepository> { FavoriteTracksRepositoryImpl(get()) }
     single<TrackRepository> {
-        TrackRepositoryImpl(get())
+        TrackRepositoryImpl(get(), get())
     }
 
     single<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(
             sharedPrefs = get<SharedPreferences>(named(SEARCH_HISTORY_SHARED_PREFS)),
-            gson = get()
+            gson = get(),
+            database = get()
         )
     }
 

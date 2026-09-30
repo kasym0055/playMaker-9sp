@@ -33,4 +33,8 @@
     <string name="no_playlists">Вы не создали\nни одного плейлиста</string>
     <string name="no_track_data">Нет данных о треке</string>
     <string name="audio_unavailable">Аудио недоступно</string>
+    <string name="add_to_favorites">Добавить в избранное</string>
+    <string name="remove_from_favorites">Удалить из избранного</string>
+    <string name="favorites_error">Не удалось обновить избранное. Попробуйте ещё раз.</string>
+    <string name="favorites_load_error">Не удалось загрузить избранные треки</string>
 </resources>

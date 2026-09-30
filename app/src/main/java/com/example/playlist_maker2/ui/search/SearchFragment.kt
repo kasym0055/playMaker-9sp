@@ -61,6 +61,11 @@ class SearchFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (binding.etSearch.text.isEmpty() && binding.etSearch.hasFocus()) viewModel.showHistory()
+    }
+
     private fun setupTrackLists() {
         historyTrackAdapter = TrackAdapter(historyTracks, ::openPlayer)
         trackAdapter = TrackAdapter(searchResults) { track ->
