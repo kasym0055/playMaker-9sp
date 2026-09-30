@@ -1,9 +1,7 @@
 package com.example.playlist_maker2.ui
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlist_maker2.R
 import com.example.playlist_maker2.domain.models.Track
@@ -21,13 +19,15 @@ class TrackAdapter(
         return SearchViewHolder(view)
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onBindViewHolder(
         holder: SearchViewHolder,
         position: Int
     ) {
         holder.bind(track[position])
-        holder.itemView.setOnClickListener { clickListener(track[position]) }
+        holder.itemView.setOnClickListener {
+            val currentPosition = holder.bindingAdapterPosition
+            if (currentPosition != RecyclerView.NO_POSITION) clickListener(track[currentPosition])
+        }
     }
 
     override fun getItemCount(): Int {

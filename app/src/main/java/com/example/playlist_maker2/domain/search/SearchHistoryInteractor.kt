@@ -3,7 +3,7 @@ package com.example.playlist_maker2.domain.search
 import com.example.playlist_maker2.domain.models.Track
 
 interface SearchHistoryInteractor {
-    fun getHistory(): List<Track>
+    suspend fun getHistory(): List<Track>
     fun addTrack(track: Track)
     fun clearHistory()
 }
