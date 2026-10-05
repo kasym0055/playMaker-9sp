@@ -11,10 +11,58 @@
         android:id="@+id/newPlaylistButton"
         style="@style/MediaActionButton"
         android:layout_marginTop="@dimen/max_margin"
+        android:letterSpacing="0"
         android:text="@string/new_playlist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playlistsList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/default_margin"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:paddingBottom="@dimen/min_padding"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/newPlaylistButton"
+        tools:listitem="@layout/item_playlist" />
+
+    <ProgressBar
+        android:id="@+id/playlistsProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/newPlaylistButton" />
+
+    <TextView
+        android:id="@+id/playlistsErrorText"
+        style="@style/MediaPlaceholderText"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:text="@string/playlists_error"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/newPlaylistButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/playlistsRetryButton"
+        style="@style/MediaActionButton"
+        android:layout_marginTop="@dimen/default_margin"
+        android:text="@string/refresh"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/playlistsErrorText" />
 
     <ImageView
         android:id="@+id/playlistsPlaceholderImage"
@@ -23,6 +71,7 @@
         android:layout_marginTop="@dimen/playlist_placeholder_image_margin"
         android:contentDescription="@null"
         android:src="@drawable/img_2"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/newPlaylistButton" />
@@ -32,6 +81,7 @@
         style="@style/MediaPlaceholderText"
         android:layout_marginTop="@dimen/default_margin"
         android:text="@string/no_playlists"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/playlistsPlaceholderImage" />

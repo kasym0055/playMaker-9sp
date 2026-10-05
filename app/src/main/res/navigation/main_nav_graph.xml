@@ -14,6 +14,9 @@
             <action
                 android:id="@+id/action_mediaLibraryFragment_to_audioPlayerFragment"
                 app:destination="@id/audioPlayerFragment" />
+            <action
+                android:id="@+id/action_mediaLibraryFragment_to_createPlaylistFragment"
+                app:destination="@id/createPlaylistFragment" />
         </fragment>
     </navigation>
 
@@ -36,6 +39,11 @@
     </navigation>
 
     <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.example.playlist_maker2.ui.playlists.create.CreatePlaylistFragment"
+        android:label="@string/new_playlist" />
+
+    <fragment
         android:id="@+id/audioPlayerFragment"
         android:name="com.example.playlist_maker2.ui.player.AudioPlayerFragment"
         android:label="@string/app_name">
@@ -44,6 +52,9 @@
             android:defaultValue="@null"
             app:argType="com.example.playlist_maker2.domain.models.Track"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_audioPlayerFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment" />
     </fragment>
 
 </navigation>

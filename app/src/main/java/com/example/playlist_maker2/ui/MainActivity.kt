@@ -23,7 +23,8 @@ class MainActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.updatePadding(top = systemBars.top, bottom = systemBars.bottom)
+            val keyboard = insets.getInsets(WindowInsetsCompat.Type.ime())
+            view.updatePadding(top = systemBars.top, bottom = maxOf(systemBars.bottom, keyboard.bottom))
             insets
         }
 
@@ -33,11 +34,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.bottomNavigation.visibility = if (destination.id == R.id.audioPlayerFragment) {
+            binding.bottomNavigation.visibility = if (
+                destination.id == R.id.audioPlayerFragment || destination.id == R.id.createPlaylistFragment
+            ) {
                 View.GONE
             } else {
                 View.VISIBLE
             }
+            binding.bottomNavigationDivider.visibility = binding.bottomNavigation.visibility
         }
     }
 }

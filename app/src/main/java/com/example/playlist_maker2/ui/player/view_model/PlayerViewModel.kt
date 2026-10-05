@@ -8,7 +8,11 @@ import com.example.playlist_maker2.domain.player.AudioPlayerInteractor
 import com.example.playlist_maker2.ui.player.models.PlayerState
 import com.example.playlist_maker2.domain.favorite.FavoriteTracksInteractor
 import com.example.playlist_maker2.domain.models.Track
+import com.example.playlist_maker2.domain.models.Playlist
+import com.example.playlist_maker2.domain.playlists.PlaylistsInteractor
+import com.example.playlist_maker2.ui.player.models.AddToPlaylistResult
 import com.example.playlist_maker2.ui.player.models.FavoriteState
+import com.example.playlist_maker2.ui.player.models.PlayerPlaylistsState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -20,7 +24,8 @@ import java.util.Locale
 
 class PlayerViewModel(
     private val audioPlayerInteractor: AudioPlayerInteractor,
-    private val favoriteTracksInteractor: FavoriteTracksInteractor
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
 
     private val playerDataLive = MutableLiveData<PlayerState>(PlayerState.Default)
@@ -31,6 +36,68 @@ class PlayerViewModel(
     private var currentTrack: Track? = null
     private var favoriteObservationJob: Job? = null
     private var isFavoriteUpdateRunning = false
+
+    private val playlistsLiveData = MutableLiveData(PlayerPlaylistsState())
+    private val addToPlaylistResultLiveData = MutableLiveData<AddToPlaylistResult?>()
+    private var playlistsObservationJob: Job? = null
+    private var isPlaylistUpdateRunning = false
+
+    fun observePlaylists(): LiveData<PlayerPlaylistsState> = playlistsLiveData
+
+    fun observeAddToPlaylistResult(): LiveData<AddToPlaylistResult?> = addToPlaylistResultLiveData
+
+    fun showPlaylists() {
+        playlistsObservationJob?.cancel()
+        playlistsLiveData.value = playlistsLiveData.value?.copy(isVisible = true, isLoading = true)
+        playlistsObservationJob = viewModelScope.launch {
+            playlistsInteractor.observePlaylists()
+                .catch { error ->
+                    if (error is CancellationException) throw error
+                    playlistsLiveData.value = playlistsLiveData.value?.copy(isLoading = false)
+                    addToPlaylistResultLiveData.value = AddToPlaylistResult.Error
+                }
+                .collect { playlists ->
+                    playlistsLiveData.value = playlistsLiveData.value?.copy(
+                        playlists = playlists,
+                        isLoading = false
+                    )
+                }
+        }
+    }
+
+    fun hidePlaylists() {
+        playlistsObservationJob?.cancel()
+        playlistsObservationJob = null
+        playlistsLiveData.value = playlistsLiveData.value?.copy(isVisible = false, isLoading = false)
+    }
+
+    fun addTrackToPlaylist(playlist: Playlist) {
+        val track = currentTrack ?: return
+        if (isPlaylistUpdateRunning || playlistsLiveData.value?.isVisible != true) return
+        isPlaylistUpdateRunning = true
+        playlistsLiveData.value = playlistsLiveData.value?.copy(isAdding = true)
+        viewModelScope.launch {
+            try {
+                if (playlistsInteractor.addTrack(playlist.id, track)) {
+                    hidePlaylists()
+                    addToPlaylistResultLiveData.value = AddToPlaylistResult.Added(playlist.name)
+                } else {
+                    addToPlaylistResultLiveData.value = AddToPlaylistResult.AlreadyAdded(playlist.name)
+                }
+            } catch (error: CancellationException) {
+                throw error
+            } catch (_: Exception) {
+                addToPlaylistResultLiveData.value = AddToPlaylistResult.Error
+            } finally {
+                isPlaylistUpdateRunning = false
+                playlistsLiveData.value = playlistsLiveData.value?.copy(isAdding = false)
+            }
+        }
+    }
+
+    fun consumeAddToPlaylistResult() {
+        addToPlaylistResultLiveData.value = null
+    }
 
     fun observeFavorite(): LiveData<FavoriteState> = favoriteLiveData
 

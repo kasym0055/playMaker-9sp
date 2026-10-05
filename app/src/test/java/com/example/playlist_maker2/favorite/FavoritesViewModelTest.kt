@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModelStore
 import com.example.playlist_maker2.domain.favorite.FavoriteTracksInteractor
 import com.example.playlist_maker2.domain.models.Track
+import com.example.playlist_maker2.domain.models.Playlist
+import com.example.playlist_maker2.domain.playlists.PlaylistsInteractor
 import com.example.playlist_maker2.domain.player.AudioPlayerInteractor
 import com.example.playlist_maker2.ui.formatTrackDuration
 import com.example.playlist_maker2.ui.media.favorite.models.FavoriteTracksState
@@ -13,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -35,7 +38,7 @@ class FavoritesViewModelTest {
     @Before fun setUp() { Dispatchers.setMain(dispatcher) }
     @After fun tearDown() { store.clear(); Dispatchers.resetMain() }
 
-    private fun player(track: Track): PlayerViewModel = PlayerViewModel(SilentPlayer(), favorites).also {
+    private fun player(track: Track): PlayerViewModel = PlayerViewModel(SilentPlayer(), favorites, EmptyPlaylists()).also {
         store.put("player", it)
         it.setTrack(track)
     }
@@ -138,5 +141,12 @@ class FavoritesViewModelTest {
         override fun pausePlayer() = Unit
         override fun releasePlayer() = Unit
         override fun getCurrentPosition() = 0
+    }
+
+    private class EmptyPlaylists : PlaylistsInteractor {
+        override fun observePlaylists() = flowOf(emptyList<Playlist>())
+        override suspend fun createPlaylist(name: String, description: String, coverUri: String?) = 0L
+        override suspend fun addTrack(playlistId: Long, track: Track) = false
+        override suspend fun updatePlaylist(playlist: Playlist) = Unit
     }
 }

@@ -5,25 +5,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.BundleCompat
+import androidx.core.view.doOnLayout
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.playlist_maker2.R
 import com.example.playlist_maker2.databinding.FragmentAudioPlayerBinding
 import com.example.playlist_maker2.domain.models.Track
 import com.example.playlist_maker2.ui.player.models.PlayerState
+import com.example.playlist_maker2.ui.player.models.AddToPlaylistResult
 import com.example.playlist_maker2.ui.player.view_model.PlayerViewModel
 import com.example.playlist_maker2.ui.search.TRACK_ARGUMENT_KEY
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.playlist_maker2.ui.formatTrackDuration
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class AudioPlayerFragment : Fragment() {
 
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PlayerViewModel by viewModel()
+    private var playlistsBottomSheet: BottomSheetBehavior<LinearLayout>? = null
+    private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +59,7 @@ class AudioPlayerFragment : Fragment() {
 
         setupUi(track)
         viewModel.setTrack(track)
+        setupPlaylistsBottomSheet()
         viewModel.observeFavorite().observe(viewLifecycleOwner) { state ->
             binding.favouriteButton.isSelected = state.isFavorite
             binding.favouriteButton.isEnabled = !state.isLoading
@@ -80,6 +91,93 @@ class AudioPlayerFragment : Fragment() {
         }
         binding.playButton.setOnClickListener {
             viewModel.playBackControl()
+        }
+    }
+
+    private fun setupPlaylistsBottomSheet() {
+        val adapter = PlayerPlaylistsAdapter(viewModel::addTrackToPlaylist)
+        binding.playerPlaylistsList.layoutManager = LinearLayoutManager(requireContext())
+        binding.playerPlaylistsList.adapter = adapter
+
+        val behavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
+            isHideable = true
+            skipCollapsed = true
+            isFitToContents = true
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        playlistsBottomSheet = behavior
+        binding.root.doOnLayout { root ->
+            if (_binding?.root === root) {
+                binding.playlistsBottomSheet.updateLayoutParams {
+                    height = (root.height * SHEET_HEIGHT_RATIO).toInt()
+                }
+                if (viewModel.observePlaylists().value?.isVisible == true) {
+                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                }
+            }
+        }
+
+        val backCallback = object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() = viewModel.hidePlaylists()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backCallback)
+        bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    if (viewModel.observePlaylists().value?.isVisible == true) viewModel.hidePlaylists()
+                    _binding?.overlay?.isVisible = false
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                _binding?.overlay?.alpha = (slideOffset + 1f).coerceIn(0f, 1f)
+            }
+        }.also(behavior::addBottomSheetCallback)
+
+        binding.playlistButton.setOnClickListener { viewModel.showPlaylists() }
+        binding.overlay.setOnClickListener { viewModel.hidePlaylists() }
+        binding.newPlaylistButton.setOnClickListener {
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.audioPlayerFragment) {
+                viewModel.hidePlaylists()
+                navController.navigate(R.id.action_audioPlayerFragment_to_createPlaylistFragment)
+            }
+        }
+
+        viewModel.observePlaylists().observe(viewLifecycleOwner) { state ->
+            adapter.submitList(state.playlists)
+            binding.playlistsProgress.isVisible = state.isLoading
+            binding.newPlaylistButton.isEnabled = !state.isAdding
+            backCallback.isEnabled = state.isVisible
+            binding.playerContent.importantForAccessibility = if (state.isVisible) {
+                View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+            } else {
+                View.IMPORTANT_FOR_ACCESSIBILITY_AUTO
+            }
+            if (state.isVisible) {
+                binding.overlay.isVisible = true
+                binding.overlay.alpha = 1f
+                if (binding.root.isLaidOut && behavior.state != BottomSheetBehavior.STATE_EXPANDED &&
+                    behavior.state != BottomSheetBehavior.STATE_DRAGGING
+                ) {
+                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                }
+            } else if (behavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+                behavior.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                binding.overlay.isVisible = false
+            }
+        }
+
+        viewModel.observeAddToPlaylistResult().observe(viewLifecycleOwner) { result ->
+            val message = when (result) {
+                is AddToPlaylistResult.Added -> getString(R.string.added_to_playlist, result.playlistName)
+                is AddToPlaylistResult.AlreadyAdded -> getString(R.string.track_already_in_playlist, result.playlistName)
+                AddToPlaylistResult.Error -> getString(R.string.playlists_error)
+                null -> return@observe
+            }
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            viewModel.consumeAddToPlaylistResult()
         }
     }
 
@@ -134,11 +232,16 @@ class AudioPlayerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        bottomSheetCallback?.let { playlistsBottomSheet?.removeBottomSheetCallback(it) }
+        bottomSheetCallback = null
+        playlistsBottomSheet = null
+        binding.playerPlaylistsList.adapter = null
         _binding = null
         super.onDestroyView()
     }
 
     companion object {
         private const val YEAR_LENGTH = 4
+        private const val SHEET_HEIGHT_RATIO = 0.63f
     }
 }
