@@ -1,6 +1,8 @@
 package com.example.playlist_maker2.di
 
 import android.content.Context
+import androidx.room.Room
+import com.example.playlist_maker2.data.db.AppDatabase
 import android.media.MediaPlayer
 import com.example.playlist_maker2.data.network.ItunesAPI
 import com.example.playlist_maker2.ui.PREFS_NAME
@@ -17,6 +19,7 @@ const val SETTINGS_SHARED_PREFS = "settings_shared_prefs"
 const val SEARCH_HISTORY_SHARED_PREFS = "search_history_shared_prefs"
 
 val dataModule = module {
+    single { Room.databaseBuilder(androidContext(), AppDatabase::class.java, "playlist_maker.db").build() }
     single<ItunesAPI> {
         Retrofit.Builder()
             .baseUrl(TRACK_BASE_URL)
