@@ -100,8 +100,8 @@ class CreatePlaylistFragment : Fragment() {
 
     private fun renderInput(input: com.google.android.material.textfield.TextInputLayout, isFilled: Boolean) {
         val colors = if (isFilled) {
-            val blue = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.blue)
-            ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf()), intArrayOf(blue, blue))
+            val color = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.playlist_input_active)
+            ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf()), intArrayOf(color, color))
         } else {
             androidx.appcompat.content.res.AppCompatResources.getColorStateList(requireContext(), R.color.playlist_input_stroke)
         }

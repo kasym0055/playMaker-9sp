@@ -4,6 +4,8 @@
     <color name="backdround_w_b">#1A1B22</color>
     <color name="text_color">#FFFFFFFF</color>
     <color name="yp_color_text" >#FFFFFF</color>
+    <color name="playlist_input_outline">@color/white</color>
+    <color name="playlist_input_active">@color/white</color>
     <color name="iconColor">#FFFFFF</color>
     <color name="input_text_color">#1A1B22</color>
     <color name="input_hint_color">#1A1B22</color>
