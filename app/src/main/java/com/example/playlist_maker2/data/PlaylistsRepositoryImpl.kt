@@ -15,6 +15,8 @@ import java.io.IOException
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -31,6 +33,26 @@ class PlaylistsRepositoryImpl(
     override fun observePlaylists() = dao.observePlaylists()
         .map { entities -> entities.map(mapper::toPlaylist) }
         .flowOn(Dispatchers.IO)
+
+    override fun observePlaylist(playlistId: Long) = dao.observePlaylist(playlistId)
+        .map { entity -> entity?.let(mapper::toPlaylist) }
+        .distinctUntilChanged()
+        .flowOn(Dispatchers.IO)
+
+    override suspend fun getPlaylist(playlistId: Long) = withContext(Dispatchers.IO) {
+        dao.getPlaylist(playlistId)?.let(mapper::toPlaylist)
+    }
+
+    override fun getTracks(trackIds: List<Long>) = combine(
+        database.playlistTrackDao().observeAllTracks(),
+        database.trackDao().observeFavorites()
+    ) { entities, favorites ->
+        val tracks = entities.associateBy { it.trackId }
+        val favoriteIds = favorites.mapTo(hashSetOf()) { it.trackId }
+        trackIds.distinct().asReversed().mapNotNull { id ->
+            tracks[id]?.let { mapper.toTrack(it, id in favoriteIds) }
+        }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun createPlaylist(name: String, description: String, coverUri: String?) =
         withContext(Dispatchers.IO) {
@@ -66,6 +88,75 @@ class PlaylistsRepositoryImpl(
         require(playlist.name.isNotBlank())
         val ids = playlist.trackIds.distinct()
         check(dao.update(mapper.toEntity(playlist.copy(trackIds = ids, trackCount = ids.size))) == 1)
+    }
+
+    override suspend fun removeTrack(playlistId: Long, trackId: Long) = withContext(Dispatchers.IO) {
+        database.withTransaction {
+            val playlist = dao.getPlaylist(playlistId)?.let(mapper::toPlaylist)
+                ?: return@withTransaction
+            if (trackId !in playlist.trackIds) return@withTransaction
+            val remainingIds = playlist.trackIds.filterNot { it == trackId }
+            dao.update(mapper.toEntity(playlist.copy(trackIds = remainingIds, trackCount = remainingIds.size)))
+            deleteUnusedTracks(listOf(trackId))
+        }
+    }
+
+    override suspend fun deletePlaylist(playlistId: Long) = withContext(Dispatchers.IO) {
+        withContext(NonCancellable) {
+            val oldCover = database.withTransaction {
+                val playlist = dao.getPlaylist(playlistId)?.let(mapper::toPlaylist)
+                    ?: return@withTransaction null
+                dao.delete(playlistId)
+                deleteUnusedTracks(playlist.trackIds)
+                playlist.coverPath
+            }
+            deleteUnusedCover(oldCover)
+        }
+    }
+
+    override suspend fun editPlaylist(playlistId: Long, name: String, description: String, coverUri: String?) =
+        withContext(Dispatchers.IO) {
+            require(name.isNotBlank())
+            val current = requireNotNull(dao.getPlaylist(playlistId))
+            val copiedCover = if (coverUri != null && coverUri != current.coverPath) {
+                copyCover(Uri.parse(coverUri).let { uri ->
+                    if (uri.scheme == null) Uri.fromFile(File(coverUri)) else uri
+                })
+            } else null
+            val newCoverPath = copiedCover?.absolutePath ?: coverUri
+            try {
+                withContext(NonCancellable) {
+                    val previousCover = database.withTransaction {
+                        val latest = requireNotNull(dao.getPlaylist(playlistId))
+                        check(dao.update(latest.copy(
+                            name = name,
+                            description = description,
+                            coverPath = newCoverPath
+                        )) == 1)
+                        latest.coverPath
+                    }
+                    if (previousCover != newCoverPath) deleteUnusedCover(previousCover)
+                }
+            } catch (error: Throwable) {
+                copiedCover?.delete()
+                throw error
+            }
+        }
+
+    private suspend fun deleteUnusedTracks(trackIds: List<Long>) {
+        val usedIds = dao.getAllPlaylists().flatMap { mapper.toPlaylist(it).trackIds }.toSet()
+        val unusedIds = trackIds.distinct().filterNot { it in usedIds }
+        if (unusedIds.isNotEmpty()) database.playlistTrackDao().deleteTracks(unusedIds)
+    }
+
+    private suspend fun deleteUnusedCover(coverPath: String?) {
+        if (coverPath == null) return
+        runCatching {
+            if (dao.getCoverUsageCount(coverPath) != 0) return
+            val file = File(coverPath)
+            val directory = File(context.filesDir, "playlist_covers")
+            if (file.canonicalFile.parentFile == directory.canonicalFile) file.delete()
+        }
     }
 
     private fun copyCover(uri: Uri): File {

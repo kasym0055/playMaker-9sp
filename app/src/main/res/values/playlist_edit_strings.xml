@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_playlist">Редактировать</string>
+    <string name="save_playlist">Сохранить</string>
+    <string name="playlist_edit_save_error">Не удалось сохранить изменения. Попробуйте ещё раз.</string>
+    <string name="playlist_edit_load_error">Не удалось загрузить плейлист</string>
+</resources>

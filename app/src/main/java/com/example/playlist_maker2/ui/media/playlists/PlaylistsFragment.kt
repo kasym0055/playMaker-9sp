@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,7 +19,15 @@ class PlaylistsFragment : Fragment() {
     private val viewModel: PlaylistsViewModel by viewModel()
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
-    private val playlistAdapter = PlaylistsAdapter()
+    private val playlistAdapter = PlaylistsAdapter { playlist ->
+        val controller = findNavController()
+        if (controller.currentDestination?.id == R.id.mediaLibraryFragment) {
+            controller.navigate(
+                R.id.action_mediaLibraryFragment_to_playlistFragment,
+                bundleOf("playlistId" to playlist.id)
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

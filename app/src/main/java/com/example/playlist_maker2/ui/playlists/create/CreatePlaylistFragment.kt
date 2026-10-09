@@ -20,12 +20,18 @@ import com.example.playlist_maker2.R
 import com.example.playlist_maker2.databinding.FragmentCreatePlaylistBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
-class CreatePlaylistFragment : Fragment() {
+open class CreatePlaylistFragment : Fragment() {
 
     private var _binding: FragmentCreatePlaylistBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CreatePlaylistViewModel by viewModel()
+    protected open val viewModel: CreatePlaylistViewModel by viewModel()
+    protected open val titleResource: Int = R.string.new_playlist
+    protected open val actionResource: Int = R.string.create_playlist
+    protected open val saveErrorResource: Int = R.string.playlist_save_error
+    protected open val loadErrorResource: Int = R.string.playlist_save_error
+    protected open val destinationId: Int = R.id.createPlaylistFragment
     private var displayedCover: String? = null
     private var discardDialog: androidx.appcompat.app.AlertDialog? = null
 
@@ -52,6 +58,8 @@ class CreatePlaylistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.playlistFormTitle.setText(titleResource)
+        binding.createPlaylistButton.setText(actionResource)
         val draft = viewModel.observeState().value!!
         binding.playlistName.setText(draft.name)
         binding.playlistDescription.setText(draft.description)
@@ -69,15 +77,27 @@ class CreatePlaylistFragment : Fragment() {
     }
 
     private fun render(state: CreatePlaylistState) {
-        if (state.createdName != null) {
-            Toast.makeText(requireContext(), getString(R.string.playlist_created, state.createdName), Toast.LENGTH_SHORT).show()
-            findNavController().popBackStack()
+        if (state.hasLoadError) {
+            if (findNavController().currentDestination?.id == destinationId) {
+                Toast.makeText(requireContext(), loadErrorResource, Toast.LENGTH_SHORT).show()
+                closePlaylistForm()
+            }
             return
         }
+        if (state.createdName != null) {
+            viewModel.consumeSuccess()
+            onPlaylistSaved(state.createdName)
+            return
+        }
+        if (binding.playlistName.text?.toString() != state.name) binding.playlistName.setText(state.name)
+        if (binding.playlistDescription.text?.toString() != state.description) {
+            binding.playlistDescription.setText(state.description)
+        }
         binding.createPlaylistButton.isEnabled = state.canCreate
-        binding.playlistName.isEnabled = !state.isSaving
-        binding.playlistDescription.isEnabled = !state.isSaving
-        binding.playlistCoverContainer.isEnabled = !state.isSaving
+        val isEditable = !state.isSaving && !state.isLoading
+        binding.playlistName.isEnabled = isEditable
+        binding.playlistDescription.isEnabled = isEditable
+        binding.playlistCoverContainer.isEnabled = isEditable
         renderInput(binding.playlistNameLayout, state.name.isNotEmpty())
         renderInput(binding.playlistDescriptionLayout, state.description.isNotEmpty())
         binding.playlistCover.isVisible = state.coverUri != null
@@ -88,12 +108,14 @@ class CreatePlaylistFragment : Fragment() {
         if (displayedCover != state.coverUri) {
             displayedCover = state.coverUri
             Glide.with(this)
-                .load(state.coverUri?.let(Uri::parse))
+                .load(state.coverUri?.let { reference ->
+                    if (File(reference).isAbsolute) File(reference) else Uri.parse(reference)
+                })
                 .error(R.drawable.audio_player_placeholder)
                 .into(binding.playlistCover)
         }
         if (state.hasError) {
-            Toast.makeText(requireContext(), R.string.playlist_save_error, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), saveErrorResource, Toast.LENGTH_SHORT).show()
             viewModel.consumeError()
         }
     }
@@ -111,17 +133,29 @@ class CreatePlaylistFragment : Fragment() {
         }
     }
 
-    private fun requestClose() {
+    protected open fun onPlaylistSaved(name: String) {
+        if (findNavController().currentDestination?.id != destinationId) return
+        Toast.makeText(requireContext(), getString(R.string.playlist_created, name), Toast.LENGTH_SHORT).show()
+        closePlaylistForm()
+    }
+
+    protected fun closePlaylistForm() {
+        val controller = findNavController()
+        if (controller.currentDestination?.id == destinationId) controller.popBackStack()
+    }
+
+    protected open fun requestClose() {
+        if (findNavController().currentDestination?.id != destinationId) return
         val draft = viewModel.observeState().value ?: return
         if (draft.isSaving) return
         if (!draft.hasUnsavedData) {
-            findNavController().popBackStack()
+            closePlaylistForm()
         } else if (discardDialog?.isShowing != true) {
             discardDialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.discard_playlist_title)
                 .setMessage(R.string.discard_playlist_message)
                 .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.finish) { _, _ -> findNavController().popBackStack() }
+                .setPositiveButton(R.string.finish) { _, _ -> closePlaylistForm() }
                 .show()
         }
     }

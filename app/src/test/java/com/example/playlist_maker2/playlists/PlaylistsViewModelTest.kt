@@ -12,6 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -72,11 +73,17 @@ class PlaylistsViewModelTest {
 
         override fun observePlaylists(): Flow<List<Playlist>> =
             if (failObservation) flow { error("Unavailable") } else items
+        override fun observePlaylist(playlistId: Long) = flowOf<Playlist?>(null)
+        override suspend fun getPlaylist(playlistId: Long): Playlist? = null
+        override fun getTracks(trackIds: List<Long>) = flowOf(emptyList<Track>())
 
         override suspend fun createPlaylist(name: String, description: String, coverUri: String?): Long =
             error("Unused")
 
         override suspend fun addTrack(playlistId: Long, track: Track): Boolean = error("Unused")
         override suspend fun updatePlaylist(playlist: Playlist) = error("Unused")
+        override suspend fun removeTrack(playlistId: Long, trackId: Long) = Unit
+        override suspend fun deletePlaylist(playlistId: Long) = Unit
+        override suspend fun editPlaylist(playlistId: Long, name: String, description: String, coverUri: String?) = Unit
     }
 }

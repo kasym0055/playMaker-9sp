@@ -148,5 +148,11 @@ class FavoritesViewModelTest {
         override suspend fun createPlaylist(name: String, description: String, coverUri: String?) = 0L
         override suspend fun addTrack(playlistId: Long, track: Track) = false
         override suspend fun updatePlaylist(playlist: Playlist) = Unit
+        override fun observePlaylist(playlistId: Long) = flowOf<Playlist?>(null)
+        override suspend fun getPlaylist(playlistId: Long): Playlist? = null
+        override fun getTracks(trackIds: List<Long>) = flowOf(emptyList<Track>())
+        override suspend fun removeTrack(playlistId: Long, trackId: Long) = Unit
+        override suspend fun deletePlaylist(playlistId: Long) = Unit
+        override suspend fun editPlaylist(playlistId: Long, name: String, description: String, coverUri: String?) = Unit
     }
 }
