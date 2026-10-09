@@ -19,4 +19,16 @@ interface PlaylistDao {
 
     @Query("SELECT * FROM playlists WHERE id = :playlistId")
     suspend fun getPlaylist(playlistId: Long): PlaylistEntity?
+
+    @Query("SELECT * FROM playlists WHERE id = :playlistId")
+    fun observePlaylist(playlistId: Long): Flow<PlaylistEntity?>
+
+    @Query("SELECT * FROM playlists")
+    suspend fun getAllPlaylists(): List<PlaylistEntity>
+
+    @Query("DELETE FROM playlists WHERE id = :playlistId")
+    suspend fun delete(playlistId: Long)
+
+    @Query("SELECT COUNT(*) FROM playlists WHERE coverPath = :coverPath")
+    suspend fun getCoverUsageCount(coverPath: String): Int
 }

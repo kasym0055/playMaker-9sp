@@ -1,10 +1,12 @@
 package com.example.playlist_maker2.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.NavHostFragment
@@ -25,6 +27,12 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val keyboard = insets.getInsets(WindowInsetsCompat.Type.ime())
             view.updatePadding(top = systemBars.top, bottom = maxOf(systemBars.bottom, keyboard.bottom))
+            val isDarkTheme = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+                Configuration.UI_MODE_NIGHT_YES
+            WindowCompat.getInsetsController(window, view).apply {
+                isAppearanceLightStatusBars = !isDarkTheme
+                isAppearanceLightNavigationBars = !isDarkTheme
+            }
             insets
         }
 
@@ -35,7 +43,8 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.bottomNavigation.visibility = if (
-                destination.id == R.id.audioPlayerFragment || destination.id == R.id.createPlaylistFragment
+                destination.id == R.id.audioPlayerFragment || destination.id == R.id.createPlaylistFragment ||
+                destination.id == R.id.playlistFragment || destination.id == R.id.editPlaylistFragment
             ) {
                 View.GONE
             } else {

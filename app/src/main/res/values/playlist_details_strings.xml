@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="playlist_details_back">Назад</string>
+    <string name="playlist_details_share">Поделиться</string>
+    <string name="playlist_details_menu">Меню плейлиста</string>
+    <string name="playlist_details_edit">Редактировать информацию</string>
+    <string name="playlist_details_delete">Удалить плейлист</string>
+    <string name="playlist_details_delete_title">Удалить плейлист</string>
+    <string name="playlist_details_delete_message">Хотите удалить плейлист?</string>
+    <string name="playlist_details_no">Нет</string>
+    <string name="playlist_details_yes">Да</string>
+    <string name="playlist_details_remove_track_message">Хотите удалить трек?</string>
+    <string name="playlist_details_empty_share">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="playlist_details_error">Не удалось загрузить плейлист</string>
+    <string name="playlist_details_operation_error">Не удалось изменить плейлист</string>
+    <string name="playlist_details_share_error">Не удалось поделиться плейлистом</string>
+    <string name="playlist_details_missing">Плейлист не найден</string>
+    <string name="playlist_details_empty_tracks">В этом плейлисте нет треков</string>
+    <string name="playlist_details_retry">Повторить</string>
+    <string name="playlist_details_metadata">%1$s • %2$s</string>
+    <plurals name="playlist_details_minutes">
+        <item quantity="one">%1$d минута</item>
+        <item quantity="few">%1$d минуты</item>
+        <item quantity="many">%1$d минут</item>
+        <item quantity="other">%1$d минут</item>
+    </plurals>
+    <plurals name="playlist_details_tracks">
+        <item quantity="one">%1$d трек</item>
+        <item quantity="few">%1$d трека</item>
+        <item quantity="many">%1$d треков</item>
+        <item quantity="other">%1$d треков</item>
+    </plurals>
+</resources>

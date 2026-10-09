@@ -11,14 +11,18 @@ import com.example.playlist_maker2.databinding.ItemPlaylistBinding
 import com.example.playlist_maker2.domain.models.Playlist
 import java.io.File
 
-class PlaylistsAdapter : ListAdapter<Playlist, PlaylistsAdapter.PlaylistViewHolder>(PlaylistDiffCallback) {
+class PlaylistsAdapter(
+    private val onPlaylistClick: (Playlist) -> Unit = {}
+) : ListAdapter<Playlist, PlaylistsAdapter.PlaylistViewHolder>(PlaylistDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         val binding = ItemPlaylistBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PlaylistViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val playlist = getItem(position)
+        holder.bind(playlist)
+        holder.itemView.setOnClickListener { onPlaylistClick(playlist) }
     }
 
     class PlaylistViewHolder(private val binding: ItemPlaylistBinding) : RecyclerView.ViewHolder(binding.root) {

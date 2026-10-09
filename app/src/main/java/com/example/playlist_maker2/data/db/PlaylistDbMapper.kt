@@ -39,4 +39,18 @@ class PlaylistDbMapper(private val gson: Gson) {
         track.previewUrl,
         System.currentTimeMillis()
     )
+
+    fun toTrack(entity: PlaylistTrackEntity, isFavorite: Boolean = false) = Track(
+        entity.trackId,
+        entity.trackName,
+        entity.collectionName,
+        entity.artistName,
+        entity.trackTimeMillis,
+        entity.releaseDate,
+        entity.primaryGenreName,
+        entity.country,
+        entity.artworkUrl100,
+        entity.previewUrl,
+        isFavorite
+    )
 }

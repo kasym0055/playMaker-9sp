@@ -9,32 +9,37 @@ import com.example.playlist_maker2.domain.playlists.PlaylistsInteractor
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
-class CreatePlaylistViewModel(
-    private val playlistsInteractor: PlaylistsInteractor,
-    private val savedStateHandle: SavedStateHandle
+open class CreatePlaylistViewModel(
+    protected val playlistsInteractor: PlaylistsInteractor,
+    protected val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val state = MutableLiveData(
+    protected val state = MutableLiveData(
         CreatePlaylistState(
             name = savedStateHandle[NAME] ?: "",
             description = savedStateHandle[DESCRIPTION] ?: "",
-            coverUri = savedStateHandle[COVER_URI]
+            coverUri = savedStateHandle[COVER_URI],
+            createdName = savedStateHandle[SAVED_NAME],
+            isCompleted = savedStateHandle.get<String>(SAVED_NAME) != null
         )
     )
 
     fun observeState(): LiveData<CreatePlaylistState> = state
 
     fun updateName(name: String) {
+        if (state.value!!.isLoading || state.value!!.name == name) return
         savedStateHandle[NAME] = name
         state.value = state.value!!.copy(name = name)
     }
 
     fun updateDescription(description: String) {
+        if (state.value!!.isLoading || state.value!!.description == description) return
         savedStateHandle[DESCRIPTION] = description
         state.value = state.value!!.copy(description = description)
     }
 
     fun updateCover(uri: String) {
+        if (state.value!!.isLoading || state.value!!.coverUri == uri) return
         savedStateHandle[COVER_URI] = uri
         state.value = state.value!!.copy(coverUri = uri)
     }
@@ -46,8 +51,9 @@ class CreatePlaylistViewModel(
         viewModelScope.launch {
             try {
                 val name = draft.name.trim()
-                playlistsInteractor.createPlaylist(name, draft.description, draft.coverUri)
-                state.value = draft.copy(createdName = name)
+                persistPlaylist(name, draft.description, draft.coverUri)
+                savedStateHandle[SAVED_NAME] = name
+                state.value = draft.copy(createdName = name, isCompleted = true)
             } catch (error: CancellationException) {
                 throw error
             } catch (_: Exception) {
@@ -60,9 +66,25 @@ class CreatePlaylistViewModel(
         state.value = state.value!!.copy(hasError = false)
     }
 
+    fun consumeSuccess() {
+        state.value = state.value!!.copy(createdName = null)
+    }
+
+    protected open suspend fun persistPlaylist(name: String, description: String, coverUri: String?) {
+        playlistsInteractor.createPlaylist(name, description, coverUri)
+    }
+
+    protected fun replaceDraft(name: String, description: String, coverUri: String?) {
+        savedStateHandle[NAME] = name
+        savedStateHandle[DESCRIPTION] = description
+        savedStateHandle[COVER_URI] = coverUri
+        state.value = CreatePlaylistState(name = name, description = description, coverUri = coverUri)
+    }
+
     companion object {
         private const val NAME = "playlist_name"
         private const val DESCRIPTION = "playlist_description"
         private const val COVER_URI = "playlist_cover_uri"
+        private const val SAVED_NAME = "playlist_saved_name"
     }
 }

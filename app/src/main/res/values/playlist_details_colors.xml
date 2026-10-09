@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="playlist_details_overlay">#801A1B22</color>
+    <color name="playlist_details_background">#E6E8EB</color>
+    <color name="playlist_details_cover_background">#FFFFFF</color>
+    <color name="playlist_details_header_text">#1A1B22</color>
+    <color name="playlist_details_handle">#E6E8EB</color>
+</resources>

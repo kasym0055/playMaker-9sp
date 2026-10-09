@@ -122,6 +122,9 @@ class CreatePlaylistViewModelTest {
         var failWrite = false
         var saved: Triple<String, String, String?>? = null
         override fun observePlaylists() = flowOf(emptyList<Playlist>())
+        override fun observePlaylist(playlistId: Long) = flowOf<Playlist?>(null)
+        override suspend fun getPlaylist(playlistId: Long): Playlist? = null
+        override fun getTracks(trackIds: List<Long>) = flowOf(emptyList<Track>())
         override suspend fun createPlaylist(name: String, description: String, coverUri: String?): Long {
             writes++
             delay(100)
@@ -131,5 +134,8 @@ class CreatePlaylistViewModelTest {
         }
         override suspend fun addTrack(playlistId: Long, track: Track) = true
         override suspend fun updatePlaylist(playlist: Playlist) = Unit
+        override suspend fun removeTrack(playlistId: Long, trackId: Long) = Unit
+        override suspend fun deletePlaylist(playlistId: Long) = Unit
+        override suspend fun editPlaylist(playlistId: Long, name: String, description: String, coverUri: String?) = Unit
     }
 }
