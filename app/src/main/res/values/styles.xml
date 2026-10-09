@@ -81,4 +81,21 @@
         <item name="backgroundTint">@color/yp_button</item>
         <item name="cornerRadius">@dimen/radius_button</item>
     </style>
+    <style name="PlaylistCoverShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="PlaylistTextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColorHint">@color/playlist_input_hint</item>
+        <item name="boxStrokeColor">@color/playlist_input_stroke</item>
+        <item name="hintTextColor">@color/playlist_input_active</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="boxCornerRadiusTopStart">4dp</item>
+        <item name="boxCornerRadiusTopEnd">4dp</item>
+        <item name="boxCornerRadiusBottomStart">4dp</item>
+        <item name="boxCornerRadiusBottomEnd">4dp</item>
+    </style>
 </resources>

@@ -15,8 +15,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import com.example.playlist_maker2.domain.favorite.FavoriteTracksInteractor
 import com.example.playlist_maker2.domain.favorite.impl.FavoriteTracksInteractorImpl
+import com.example.playlist_maker2.domain.playlists.PlaylistsInteractor
+import com.example.playlist_maker2.domain.playlists.impl.PlaylistsInteractorImpl
 
 val interactorModule = module {
+    single<PlaylistsInteractor> { PlaylistsInteractorImpl(get()) }
     single<FavoriteTracksInteractor> { FavoriteTracksInteractorImpl(get()) }
     single<SearchTracksInteractor> {
         SearchTracksInteractorImpl(get())

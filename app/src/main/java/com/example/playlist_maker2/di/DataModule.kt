@@ -19,7 +19,11 @@ const val SETTINGS_SHARED_PREFS = "settings_shared_prefs"
 const val SEARCH_HISTORY_SHARED_PREFS = "search_history_shared_prefs"
 
 val dataModule = module {
-    single { Room.databaseBuilder(androidContext(), AppDatabase::class.java, "playlist_maker.db").build() }
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "playlist_maker.db")
+            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .build()
+    }
     single<ItunesAPI> {
         Retrofit.Builder()
             .baseUrl(TRACK_BASE_URL)
